@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAPM Study Guide — PMBOK Process Groups</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --init-bg: #F7C873;
+      --init-header: #E8A820;
+      --plan-bg: #F9EFA0;
+      --plan-header: #D4C020;
+      --exec-bg: #D4C4F0;
+      --exec-header: #9B7FD4;
+      --mc-bg: #A8D4C8;
+      --mc-header: #5A9E8C;
+      --close-bg: #A8C8E4;
+      --close-header: #4A88B8;
+      --row-header: #F0F0F0;
+      --border: #C0C0C0;
+      --modal-overlay: rgba(0,0,0,0.5);
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 13px;
+      background: #f5f5f5;
+      color: #222;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a3a5c 0%, #2d6a9f 100%);
+      color: #fff;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 0.5px; }
+    header p { font-size: 0.8rem; opacity: 0.8; margin-top: 3px; }
+    .legend { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .legend-item {
+      display: flex; align-items: center; gap: 5px; font-size: 0.72rem;
+      background: rgba(255,255,255,0.15); padding: 3px 8px; border-radius: 12px;
+    }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    .search-bar {
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .search-bar input {
+      border: 1px solid #ccc; border-radius: 20px;
+      padding: 6px 14px; font-size: 0.85rem; width: 280px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-bar input:focus { border-color: #2d6a9f; }
+    .search-bar label { font-size: 0.8rem; color: #666; }
+
+    .table-wrapper {
+      overflow-x: auto;
+      padding: 20px 24px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 780px;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      vertical-align: top;
+    }
+
+    .th-main {
+      background: #1a3a5c;
+      color: #fff;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      padding: 10px 6px;
+    }
+    .th-pg {
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 8px 6px;
+      color: #333;
+    }
+    .th-init  { background: var(--init-header);  }
+    .th-plan  { background: var(--plan-header);  }
+    .th-exec  { background: var(--exec-header); color: #fff; }
+    .th-mc    { background: var(--mc-header);   color: #fff; }
+    .th-close { background: var(--close-header); color: #fff; }
+
+    .td-ka {
+      background: var(--row-header);
+      font-weight: 700;
+      font-size: 0.78rem;
+      width: 120px;
+      min-width: 100px;
+      vertical-align: middle;
+      line-height: 1.4;
+    }
+    .td-ka .ka-num { font-size: 1rem; color: #1a3a5c; display: block; }
+
+    .td-init  { background: var(--init-bg); }
+    .td-plan  { background: var(--plan-bg); }
+    .td-exec  { background: var(--exec-bg); }
+    .td-mc    { background: var(--mc-bg);   }
+    .td-close { background: var(--close-bg); }
+    .td-empty { background: #fafafa; }
+
+    .process-chip {
+      display: inline-block;
+      margin: 2px 0;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+      line-height: 1.3;
+      width: 100%;
+    }
+    .process-chip:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      border-color: rgba(0,0,0,0.15);
+    }
+    .chip-init  { background: rgba(232,168,32,0.25);  color: #7a5000; }
+    .chip-init:hover  { background: rgba(232,168,32,0.5); }
+    .chip-plan  { background: rgba(212,192,32,0.25);  color: #665c00; }
+    .chip-plan:hover  { background: rgba(212,192,32,0.5); }
+    .chip-exec  { background: rgba(155,127,212,0.3);  color: #4a2a80; }
+    .chip-exec:hover  { background: rgba(155,127,212,0.55); }
+    .chip-mc    { background: rgba(90,158,140,0.25);  color: #1e5248; }
+    .chip-mc:hover    { background: rgba(90,158,140,0.5); }
+    .chip-close { background: rgba(74,136,184,0.25);  color: #1a4a70; }
+    .chip-close:hover { background: rgba(74,136,184,0.5); }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--modal-overlay);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: #fff;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 700px;
+      max-height: 88vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+      animation: modalIn 0.18s ease-out;
+    }
+    @keyframes modalIn {
+      from { transform: scale(0.93) translateY(-12px); opacity: 0; }
+      to   { transform: scale(1) translateY(0);       opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 1;
+    }
+    .modal-title-group { flex: 1; }
+    .modal-number {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 10px;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .modal-title { font-size: 1.2rem; font-weight: 700; color: #1a3a5c; }
+    .modal-subtitle { font-size: 0.8rem; color: #666; margin-top: 3px; }
+
+    .modal-close {
+      background: none; border: none; cursor: pointer;
+      font-size: 1.4rem; color: #888; padding: 0 4px;
+      line-height: 1; transition: color 0.15s;
+    }
+    .modal-close:hover { color: #333; }
+
+    .modal-body { padding: 18px 22px 22px; }
+
+    .modal-purpose {
+      background: #f0f7ff;
+      border-left: 4px solid #2d6a9f;
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 18px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: #1a3a5c;
+    }
+
+    .section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #888;
+      margin: 14px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .tag-list { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 4px; }
+    .tag {
+      font-size: 0.75rem;
+      padding: 3px 9px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+    .tag-input   { background: #e8f4e8; color: #2a6a2a; }
+    .tag-tool    { background: #e8eef8; color: #2a3a6a; }
+    .tag-output  { background: #fef0e0; color: #7a4a00; }
+
+    .key-concepts { display: flex; flex-direction: column; gap: 6px; }
+    .concept-item {
+      background: #fafafa;
+      border: 1px solid #e8e8e8;
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    .concept-term {
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: #1a3a5c;
+      margin-bottom: 3px;
+    }
+    .concept-def {
+      font-size: 0.78rem;
+      color: #444;
+      line-height: 1.5;
+    }
+    .concept-subpoints {
+      margin-top: 6px;
+      padding-left: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .concept-subpoint {
+      font-size: 0.74rem;
+      color: #555;
+      line-height: 1.5;
+      padding: 3px 8px;
+      background: #f0f4fa;
+      border-left: 2px solid #9B7FD4;
+      border-radius: 0 4px 4px 0;
+    }
+    .concept-subpoint b { color: #3a2a60; }
+
+    /* Sequence / Order section */
+    .sequence-list { display: flex; flex-direction: column; gap: 4px; }
+    .sequence-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      background: #f5f8ff;
+      border: 1px solid #dde6f8;
+      border-radius: 6px;
+      padding: 7px 10px;
+    }
+    .seq-num {
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #2d6a9f;
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .seq-content { flex: 1; }
+    .seq-label { font-weight: 700; font-size: 0.78rem; color: #1a3a5c; }
+    .seq-detail { font-size: 0.74rem; color: #555; margin-top: 2px; line-height: 1.5; }
+    .seq-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9B7FD4;
+      font-size: 0.9rem;
+      padding: 0 2px 0 6px;
+      font-weight: 700;
+    }
+
+    /* Formula box */
+    .formula-box {
+      background: #fff8e0;
+      border: 1px solid #f0c060;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-top: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #6a4400;
+      line-height: 1.8;
+    }
+    .formula-box b { color: #4a2a00; }
+
+    .exam-tips {
+      background: #fff8e0;
+      border: 1px solid #f0d080;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-top: 14px;
+    }
+    .exam-tips-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: #a07800;
+      margin-bottom: 6px;
+    }
+    .exam-tips ul { padding-left: 16px; }
+    .exam-tips li { font-size: 0.78rem; color: #5a4800; line-height: 1.7; }
+
+    .nav-btns {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 22px;
+      border-top: 1px solid #eee;
+      gap: 8px;
+    }
+    .nav-btn {
+      background: none;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      color: #444;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) { background: #f0f7ff; border-color: #2d6a9f; color: #2d6a9f; }
+    .nav-btn:disabled { opacity: 0.35; cursor: default; }
+
+    .progress-bar {
+      height: 3px;
+      background: #e0e0e0;
+      border-radius: 2px;
+      margin: 8px 22px;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #2d6a9f, #5a9e8c);
+      transition: width 0.3s;
+    }
+
+    .modal::-webkit-scrollbar { width: 6px; }
+    .modal::-webkit-scrollbar-track { background: #f0f0f0; }
+    .modal::-webkit-scrollbar-thumb { background: #bbb; border-radius: 3px; }
+
+    @media (max-width: 600px) {
+      header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .legend { display: none; }
+      .table-wrapper { padding: 12px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>CAPM Study Guide</h1>
+    <p>PMBOK Guide — 49 Processes across 10 Knowledge Areas &amp; 5 Process Groups</p>
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--init-header)"></div>Initiating</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--plan-header)"></div>Planning</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--exec-header)"></div>Executing</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--mc-header)"></div>Mon. &amp; Controlling</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--close-header)"></div>Closing</div>
+  </div>
+</header>
+
+<div class="search-bar">
+  <label>Search:</label>
+  <input type="text" id="searchInput" placeholder="Type a process name or number (e.g. 4.1, WBS, risk)..." />
+  <span id="searchCount" style="font-size:0.8rem;color:#888;"></span>
+</div>
+
+<div class="table-wrapper">
+  <table id="mainTable">
+    <thead>
+      <tr>
+        <th class="th-main" rowspan="2">Knowledge Areas</th>
+        <th class="th-main" colspan="5">Project Management Process Groups</th>
+      </tr>
+      <tr>
+        <th class="th-pg th-init">Initiating<br>Process Group</th>
+        <th class="th-pg th-plan">Planning<br>Process Group</th>
+        <th class="th-pg th-exec">Executing<br>Process Group</th>
+        <th class="th-pg th-mc">Monitoring &amp; Controlling<br>Process Group</th>
+        <th class="th-pg th-close">Closing<br>Process Group</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <span class="modal-number" id="modalNumber"></span>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-subtitle" id="modalSubtitle"></div>
+      </div>
+      <button class="modal-close" id="modalClose">&#x2715;</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="prevBtn">&#8592; Previous</button>
+      <span id="navCount" style="font-size:0.78rem;color:#888;align-self:center;"></span>
+      <button class="nav-btn" id="nextBtn">Next &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const pgLabel = { init:'Initiating', plan:'Planning', exec:'Executing', mc:'Monitoring & Controlling', close:'Closing' };
+const pgColor = { init:'#E8A820', plan:'#C8B800', exec:'#9B7FD4', mc:'#5A9E8C', close:'#4A88B8' };
+
+const processes = [
+
+  // ===== 4. INTEGRATION =====
+  { id:'4.1', name:'Develop Project Charter', ka:'4. Project Integration Management', pg:'init',
+    purpose:'Formally authorizes the existence of a project and provides the project manager with authority to apply organizational resources to project activities.',
+    inputs:['Business Case','Benefits Management Plan','Agreements (contracts)','Enterprise Environmental Factors (EEFs)','Organizational Process Assets (OPAs)'],
+    tools:['Expert Judgment','Data Gathering (brainstorming, focus groups, interviews)','Interpersonal & Team Skills','Meetings'],
+    outputs:['Project Charter','Assumption Log'],
+    sequence: [
+      {label:'Project Selection Methods (Benefit Measurement)', detail:'Comparative Approach — scores projects against each other. Includes: Benefit-Cost Analysis, Scoring Models, Economic Models (NPV, IRR, Payback Period, BCR).'},
+      {label:'Constrained Optimization Methods', detail:'Mathematical models for large complex projects — Linear, Integer, Dynamic, Multi-Objective Programming.'},
+      {label:'Financial Selection Criteria (Best → Worst if positive)', detail:'Higher NPV = better | Higher IRR = better | Shorter Payback = better | BCR > 1.0 = acceptable.'},
+    ],
+    concepts:[
+      {term:'Project Charter', def:'Document that formally authorizes the project and grants the PM authority to apply resources.',
+       subpoints:['High-level project description & requirements','Summary milestone schedule & budget','Key stakeholder list','Pre-approved financial resources','Name of Project Manager and authority level','Assumptions and constraints']},
+      {term:'Sponsor', def:'Person who provides financial resources and formally authorizes the charter. Champions the project at senior levels.'},
+      {term:'Business Case', def:'Justifies the economic feasibility of the project. Documents reasons, options considered, expected benefits, and costs.',
+       subpoints:['NPV (Net Present Value): PV of future cash inflows − initial investment. Higher = better. If NPV > 0, project adds value.','IRR (Internal Rate of Return): discount rate that makes NPV = 0. Higher IRR = better.','Payback Period: time to recover initial investment. Shorter = better (ignores time value of money).','BCR (Benefit-Cost Ratio): Benefits ÷ Costs. BCR > 1.0 = benefits outweigh costs.']},
+      {term:'EEFs vs OPAs', def:'Enterprise Environmental Factors = external/internal conditions you CANNOT control. Organizational Process Assets = knowledge, policies, templates you CAN use.',
+       subpoints:['EEF examples: marketplace conditions, government regulations, organizational culture, stakeholder risk tolerances','OPA examples: historical information, lessons learned, templates, change control procedures']},
+      {term:'Assumption Log', def:'Documents high-level strategic and operational assumptions identified during the initiation phase.'},
+    ],
+    tips:['The charter is the ONLY document that officially authorizes a project — without it, the project does not formally exist.','The PM should be identified as early as possible — ideally before or during charter development.','The PM does NOT create the charter — the sponsor or initiating entity creates it. The PM may help write it.','A project can begin without a signed charter — but this is considered poor practice.','Sunk costs, committed costs, and opportunity costs are all covered in the Business Case.']
+  },
+
+  { id:'4.2', name:'Develop Project Management Plan', ka:'4. Project Integration Management', pg:'plan',
+    purpose:'Define, prepare, and coordinate all plan components and consolidate them into an integrated project management plan.',
+    inputs:['Project Charter','Outputs from Other Planning Processes','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Gathering','Interpersonal & Team Skills','Meetings'],
+    outputs:['Project Management Plan (PMP)'],
+    sequence: [
+      {label:'10 Subsidiary Plans', detail:'Scope, Schedule, Cost, Quality, Resource, Communications, Risk, Procurement, Stakeholder Engagement Management Plans + Requirements Management Plan.'},
+      {label:'3 Baselines (form the Performance Measurement Baseline)', detail:'Scope Baseline (Scope Statement + WBS + WBS Dictionary) | Schedule Baseline | Cost Baseline (PMB).'},
+      {label:'Additional Components', detail:'Change Management Plan, Configuration Management Plan, Development Approach, Project Life Cycle Description, Management Reviews.'},
+    ],
+    concepts:[
+      {term:'Project Management Plan (PMP)', def:'Master document integrating ALL subsidiary management plans and baselines. It is the baseline for the entire project.',
+       subpoints:['Not just the schedule — it encompasses all 10 knowledge area plans','Updated through Integrated Change Control (4.6)','Serves as the basis for measuring and reporting project performance']},
+      {term:'Baselines', def:'Approved versions of scope, schedule, and cost that can only be changed through formal change control.',
+       subpoints:['Scope Baseline: Project Scope Statement + WBS + WBS Dictionary','Schedule Baseline: Approved version of the schedule model','Cost Baseline (PMB): Time-phased budget = Project Estimates + Contingency Reserves (NOT management reserves)']},
+      {term:'Progressive Elaboration', def:'The PMP is iteratively developed — rolling wave approach as more information becomes available. Plans become more detailed over time.'},
+      {term:'Configuration Management Plan', def:'Describes how to identify and document functional/physical characteristics, control changes, record change status, and audit products to verify conformance.'},
+    ],
+    tips:['The PMP is NOT just the schedule — it is the master document for the whole project.','Once approved, changes to ANY baseline must go through 4.6 Perform Integrated Change Control.','Progressive elaboration = the plan gets more detailed as the project evolves.','The PMP is the single most important document after the charter.']
+  },
+
+  { id:'4.3', name:'Direct and Manage Project Work', ka:'4. Project Integration Management', pg:'exec',
+    purpose:'Lead and perform the work defined in the project management plan and implement approved changes to achieve project objectives.',
+    inputs:['Project Management Plan','Project Documents','Approved Change Requests','EEFs','OPAs'],
+    tools:['Expert Judgment','Project Management Information System (PMIS)','Meetings'],
+    outputs:['Deliverables','Work Performance Data','Issue Log','Change Requests','Project Management Plan Updates','Project Documents Updates'],
+    sequence: [
+      {label:'Work Performance Data (Raw)', detail:'Collected here in 4.3 — raw observations: % complete, costs incurred, start/finish dates, defect counts.'},
+      {label:'Work Performance Information (Analyzed)', detail:'Processed in 4.5 Monitor & Control — compares actuals to baselines using CV, SV, CPI, SPI.'},
+      {label:'Work Performance Reports (Formatted)', detail:'Formatted in 4.5 for distribution — status reports, dashboards, memos, presentations.'},
+    ],
+    concepts:[
+      {term:'Work Performance Data', def:'RAW observations and measurements during project activities. This is the INPUT to monitoring/controlling.',
+       subpoints:['% of work completed','Start and finish dates of activities','Number of change requests','Number of defects','Actual costs incurred','Actual durations']},
+      {term:'Deliverables', def:'Any unique and verifiable product, result, or capability to perform a service that is required to be produced to complete a process, phase, or project. Feeds into 5.5 Validate Scope.',
+       subpoints:['Must meet the acceptance criteria defined in scope','Are verified through 8.3 Control Quality before going to 5.5 Validate Scope']},
+      {term:'Issue Log', def:'Document where issues (current problems needing resolution) are recorded, assigned to owners, and tracked.',
+       subpoints:['Issues ≠ Risks: Issues are current problems; Risks are potential future events','Issue log tracks: issue description, owner, priority, target resolution date, status']},
+      {term:'Types of Change Requests', def:'Formal proposals to modify documents, deliverables, or baselines.',
+       subpoints:['Corrective Action: realigns performance with the plan (e.g., recover schedule slippage)','Preventive Action: ensures future performance stays aligned (proactive)','Defect Repair: modifies a nonconforming product component']},
+      {term:'PMIS', def:'Project Management Information System — software tools for collecting, integrating, and distributing project information (e.g., MS Project, Primavera, Jira).'},
+    ],
+    tips:['ONLY Approved Change Requests (from 4.6) are implemented here — not every request.','Data → Information → Reports: know this flow cold.','Issues (current) vs. Risks (future) — a common exam trap.']
+  },
+
+  { id:'4.4', name:'Manage Project Knowledge', ka:'4. Project Integration Management', pg:'exec',
+    purpose:'Use existing knowledge and create new knowledge to achieve project objectives and contribute to organizational learning.',
+    inputs:['Project Management Plan','Project Documents','Deliverables','EEFs','OPAs'],
+    tools:['Expert Judgment','Knowledge Management','Information Management','Interpersonal & Team Skills'],
+    outputs:['Lessons Learned Register','Project Management Plan Updates','OPA Updates'],
+    concepts:[
+      {term:'Lessons Learned Register', def:'Captures knowledge gained throughout the project — what worked, what failed, and recommendations for future projects.',
+       subpoints:['Created during the project, not just at closing','At project close, added to OPAs for future projects','Should cover: scope, schedule, cost, quality, resource, risk, and communications insights']},
+      {term:'Explicit vs. Tacit Knowledge', def:'Two types of knowledge that must be managed:',
+       subpoints:['Explicit Knowledge: easily codified — documents, reports, procedures, databases. Easy to share.','Tacit Knowledge: personal knowledge from experience, beliefs, intuitions. Hard to document. Transferred through mentoring, shadowing, job shadowing, communities of practice.']},
+      {term:'Knowledge Management Techniques', def:'Methods to capture and share knowledge:',
+       subpoints:['Networking — informal connections between team members','Communities of Practice — groups sharing interest in a topic','Work shadowing / Reverse shadowing','Discussion forums, knowledge fairs, training sessions','Story-telling to convey tacit knowledge']},
+    ],
+    tips:['Lessons learned are captured THROUGHOUT the project, not just at closure.','Tacit knowledge is harder to transfer and requires social interaction.','At project close, lessons learned become part of OPAs for future projects.']
+  },
+
+  { id:'4.5', name:'Monitor and Control Project Work', ka:'4. Project Integration Management', pg:'mc',
+    purpose:'Track, review, and report overall project progress to meet performance objectives defined in the project management plan.',
+    inputs:['Project Management Plan','Project Documents','Work Performance Information','Agreements','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Analysis (alternatives, cost-benefit, earned value, root cause, trend)','Decision Making','Meetings'],
+    outputs:['Work Performance Reports','Change Requests','Project Management Plan Updates','Project Documents Updates'],
+    concepts:[
+      {term:'Work Performance Reports', def:'Physical or electronic representation of compiled work performance information for stakeholders (status reports, dashboards, memos).',
+       subpoints:['Status Report: current state of the project vs. plan','Progress Report: work accomplished in a period','Trend Report: project performance over time','Variance Report: differences between planned and actual','Earned Value Report: EV, PV, AC, CPI, SPI analysis']},
+      {term:'Variance Analysis', def:'Compares actual project performance to baseline performance. Identifies causes and magnitude of differences.',
+       subpoints:['Cost Variance (CV) = EV − AC','Schedule Variance (SV) = EV − PV','Scope Variance: actual scope vs. planned scope']},
+      {term:'Trend Analysis', def:'Examines project performance over time to determine if performance is improving or deteriorating. Basis for forecasting.'},
+      {term:'Reserve Analysis', def:'Compares remaining contingency reserves to the amount of remaining risk to determine if the reserve is still adequate.'},
+    ],
+    tips:['This process runs CONTINUOUSLY throughout the entire project life cycle.','Work Performance INFORMATION (analyzed) is input here; Work Performance REPORTS (formatted) come out.','This process does NOT manage changes — changes go to 4.6 Integrated Change Control.']
+  },
+
+  { id:'4.6', name:'Perform Integrated Change Control', ka:'4. Project Integration Management', pg:'mc',
+    purpose:'Review all change requests; approve or reject changes; manage changes to deliverables, project documents, and the project management plan.',
+    inputs:['Project Management Plan','Project Documents','Work Performance Reports','Change Requests','EEFs','OPAs'],
+    tools:['Expert Judgment','Change Control Tools','Data Analysis','Decision Making','Meetings'],
+    outputs:['Approved Change Requests','Project Management Plan Updates','Project Documents Updates'],
+    sequence: [
+      {label:'Change Request Submitted', detail:'Any stakeholder can submit a change request — written or verbal (but must be documented in writing).'},
+      {label:'CCB Review & Analysis', detail:'Change Control Board evaluates impact on scope, schedule, cost, quality, risk, and resources.'},
+      {label:'Approve / Reject / Defer', detail:'CCB or PM (for small changes) makes the decision. All decisions are documented.'},
+      {label:'Update Project Documents', detail:'Approved changes update the PMP, baselines, and relevant project documents.'},
+      {label:'Implement via 4.3', detail:'Only APPROVED change requests are implemented in Direct and Manage Project Work (4.3).'},
+    ],
+    concepts:[
+      {term:'Change Control Board (CCB)', def:'Formally chartered group responsible for reviewing, evaluating, approving, deferring, or rejecting changes to the project.',
+       subpoints:['Composition: PM, sponsor, key stakeholders, functional managers — varies by organization','PM may approve minor changes unilaterally — larger changes require CCB approval','All decisions are documented regardless of outcome']},
+      {term:'Change Request Types', def:'Four types of intentional change requests:',
+       subpoints:['Corrective Action: aligns actual performance back with the plan (reactive — fixing a deviation)','Preventive Action: ensures future performance aligns with plan (proactive — avoiding a future deviation)','Defect Repair: fixes a nonconforming product/component','Updates: modifications to formally controlled documents or plans']},
+      {term:'Configuration Management', def:'Controls functional and physical characteristics of project products. Ensures consistency between requirements and the delivered product.',
+       subpoints:['Configuration identification: labeling and versioning documents/deliverables','Configuration status accounting: recording and reporting status of change requests','Configuration verification and audit: confirming items conform to requirements']},
+    ],
+    tips:['ALL changes — even verbal or informal ones — must be processed through this procedure.','ONLY approved change requests are implemented. Rejected requests are archived, not deleted.','Baseline changes require the most scrutiny — they affect scope, schedule, or cost commitments.','The PM can approve some changes without the CCB — but this authority must be defined in advance.']
+  },
+
+  { id:'4.7', name:'Close Project or Phase', ka:'4. Project Integration Management', pg:'close',
+    purpose:'Finalize all activities for the project, phase, or contract and formally close the project or phase.',
+    inputs:['Project Charter','Project Management Plan','Project Documents','Accepted Deliverables','Business Documents','Agreements','OPAs'],
+    tools:['Expert Judgment','Data Analysis','Meetings'],
+    outputs:['Project Documents Updates (Lessons Learned)','Final Product/Service/Result Transition','Final Report','OPA Updates'],
+    sequence: [
+      {label:'Confirm All Deliverables Accepted', detail:'Verify all deliverables have been formally accepted by the customer (from 5.5 Validate Scope).'},
+      {label:'Complete Contract Closure', detail:'Settle all open procurement items (tied to 12.3 Control Procurements).'},
+      {label:'Obtain Final Acceptance', detail:'Get formal sign-off from sponsor/customer that all objectives have been met.'},
+      {label:'Finalize Lessons Learned', detail:'Update and store the Lessons Learned Register as an OPA for future projects.'},
+      {label:'Archive Project Documents', detail:'Store all project records for legal, audit, and reference purposes.'},
+      {label:'Release Resources', detail:'Release team members, equipment, and facilities back to the organization.'},
+    ],
+    concepts:[
+      {term:'Final Report', def:'Summary of overall project performance covering all knowledge areas.',
+       subpoints:['Scope: summary of scope, including work that was in vs. out of scope','Schedule: summary of performance, including milestones achieved and any delays','Cost: total budget vs. actual cost at completion','Quality: metrics achieved vs. planned','Resource: lessons learned from resource management','Risk: summary of threats encountered and opportunities realized']},
+      {term:'Administrative vs. Contract Closure', def:'Two types of closure activities:',
+       subpoints:['Administrative Closure: completing documentation, releasing resources, archiving records','Contract Closure (Procurement): verifying seller completed all work per contract, settling invoices, formal closure letter']},
+      {term:'Early Project Termination', def:'A project can be closed before completing all planned work. Reason must be documented in the final report. Lessons learned are still required.'},
+    ],
+    tips:['A project can be terminated before completion — document the reason clearly.','Lessons learned MUST be finalized and stored in OPAs even if the project is terminated early.','Product verification confirms all work was done; administrative closure archives everything.','Closing is done for EACH phase as well as for the overall project.']
+  },
+
+  // ===== 5. SCOPE =====
+  { id:'5.1', name:'Plan Scope Management', ka:'5. Project Scope Management', pg:'plan',
+    purpose:'Create a scope management plan and requirements management plan documenting how scope will be defined, validated, and controlled.',
+    inputs:['Project Charter','Project Management Plan','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Analysis','Meetings'],
+    outputs:['Scope Management Plan','Requirements Management Plan'],
+    sequence: [
+      {label:'Scope Processes in Planning Order', detail:'5.1 Plan → 5.2 Collect Requirements → 5.3 Define Scope → 5.4 Create WBS → then 5.5 Validate & 5.6 Control in M&C.'},
+    ],
+    concepts:[
+      {term:'Scope Management Plan', def:'Describes HOW scope will be defined, developed, monitored, controlled, and validated.',
+       subpoints:['How to develop the project scope statement','How to create, maintain, and approve the WBS','How deliverables will be validated and accepted','How scope baseline changes will be controlled']},
+      {term:'Requirements Management Plan', def:'Describes HOW requirements will be analyzed, documented, and managed.',
+       subpoints:['How requirements will be collected and prioritized','Requirements traceability structure','Configuration management activities','Requirements attributes to capture']},
+      {term:'Product Scope vs. Project Scope', def:'Two distinct but related scopes:',
+       subpoints:['Product Scope: features and functions of the deliverable (measured against product requirements)','Project Scope: total work required to deliver the product (measured against the project management plan)']},
+    ],
+    tips:['Scope Management Plan = HOW to manage scope. Requirements Management Plan = HOW to manage requirements.','These plans guide ALL subsequent scope processes.','Output of 5.1 does NOT include the actual scope statement — that comes in 5.3.']
+  },
+
+  { id:'5.2', name:'Collect Requirements', ka:'5. Project Scope Management', pg:'plan',
+    purpose:'Determine, document, and manage stakeholder needs and requirements to meet project objectives.',
+    inputs:['Project Charter','Project Management Plan','Project Documents','Business Documents','Agreements','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Gathering','Data Analysis','Decision Making','Context Diagrams','Prototypes'],
+    outputs:['Requirements Documentation','Requirements Traceability Matrix (RTM)'],
+    sequence: [
+      {label:'Interactive Techniques (Most effective)', detail:'Interviews (1-on-1), Focus Groups (moderated, 6-12 people), Facilitated Workshops (JAD sessions).'},
+      {label:'Group Creativity Techniques', detail:'Brainstorming (generate ideas, no criticism), Nominal Group Technique (vote on ideas), Delphi Technique (anonymous expert consensus rounds), Mind Mapping, Affinity Diagrams.'},
+      {label:'Individual Research / Analysis', detail:'Questionnaires & Surveys (large groups, quantitative), Document Analysis, Benchmarking, Observation (job shadowing).'},
+      {label:'Modeling', detail:'Context Diagrams (system inputs/outputs), Prototypes (early working model for feedback).'},
+    ],
+    concepts:[
+      {term:'Requirements Traceability Matrix (RTM)', def:'Grid linking each requirement to its origin, objectives, WBS deliverable, and test case. Ensures no requirement is lost.',
+       subpoints:['Traces from: Business Need → Project Objectives → WBS Deliverable → Product Design → Test Case','Used to verify all requirements are met at project close','Helps manage scope changes — identifies impact of removing/adding a requirement']},
+      {term:'Requirements Types', def:'Categories of requirements to collect:',
+       subpoints:['Business Requirements: high-level organizational needs (WHY the project is needed)','Stakeholder Requirements: stakeholder needs and expectations','Solution Requirements: product/service features (Functional = what it does; Non-functional = quality attributes like performance, security)','Transition Requirements: temporary capabilities needed to move from current to future state (training, data migration)','Quality Requirements: conditions needed to validate acceptance']},
+      {term:'Delphi Technique', def:'Anonymous expert consensus method. Experts answer questionnaires in rounds; facilitator summarizes responses anonymously until consensus is reached. Reduces bias and groupthink.'},
+      {term:'Nominal Group Technique', def:'Structured brainstorming + voting. Ideas are generated individually, shared, then ranked by vote. Ensures all voices are heard.'},
+      {term:'Prototypes', def:'Working model to obtain early feedback before building the final product. Reduces rework by confirming requirements early.'},
+    ],
+    tips:['RTM is the KEY output — links requirements to their sources and deliverables.','Delphi = anonymous expert rounds → reduces bias (distinguish from brainstorming).','Requirements must be SMART: Specific, Measurable, Achievable, Relevant, Time-bound.','Collect BOTH business requirements AND stakeholder requirements.']
+  },
+
+  { id:'5.3', name:'Define Scope', ka:'5. Project Scope Management', pg:'plan',
+    purpose:'Develop a detailed description of the project and product to serve as the basis for future project decisions.',
+    inputs:['Project Charter','Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Analysis','Decision Making','Interpersonal & Team Skills','Product Analysis'],
+    outputs:['Project Scope Statement','Project Documents Updates'],
+    concepts:[
+      {term:'Project Scope Statement', def:'Detailed document describing what IS and IS NOT included in the project.',
+       subpoints:['Product scope description: characteristics of the deliverable','Project deliverables: list of outputs/outcomes','Acceptance criteria: conditions for stakeholder acceptance','Project exclusions: explicit list of what is OUT of scope (prevents scope creep)','Constraints: limiting factors (budget, time, resources, technology)','Assumptions: factors assumed to be true (if false, could cause risk)']},
+      {term:'Product Analysis', def:'Translates product objectives into requirements via techniques: product breakdown, systems analysis, requirements analysis, systems engineering, value engineering, value analysis.'},
+      {term:'Scope Exclusions', def:'Explicitly stating what is NOT included in the project scope. Critical for preventing scope creep. If it is not listed as in-scope, it is OUT of scope.',
+       subpoints:['Example: "The project will develop software; hardware procurement is NOT included."','Exclusions create clear boundaries that protect the team from unauthorized requests']},
+      {term:'Constraints vs. Assumptions', def:'Two critical elements documented in the scope statement:',
+       subpoints:['Constraints: restrictions on project options (e.g., must be completed by Dec 31, budget capped at $500K)','Assumptions: beliefs accepted as true for planning purposes (e.g., resources will be available). If wrong = Risk!']},
+    ],
+    tips:['Scope Statement is an OUTPUT of Define Scope — NOT from 5.2 Collect Requirements.','Exclusions are as important as inclusions — they prevent scope creep.','Assumptions and constraints documented here feed into risk management.','Define Scope selects the FINAL project scope from the requirements — not all requirements become scope.']
+  },
+
+  { id:'5.4', name:'Create WBS', ka:'5. Project Scope Management', pg:'plan',
+    purpose:'Subdivide project deliverables and project work into smaller, more manageable components (work packages).',
+    inputs:['Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Expert Judgment','Decomposition'],
+    outputs:['Scope Baseline','Project Documents Updates'],
+    sequence: [
+      {label:'Identify Deliverables & Work', detail:'Start with the project scope statement — identify all major deliverables.'},
+      {label:'Decompose (Top-Down)', detail:'Break each deliverable into progressively smaller components until work packages are reached.'},
+      {label:'Work Package Level', detail:'Lowest WBS level where cost AND duration can be estimated and managed reliably.'},
+      {label:'Create WBS Dictionary', detail:'Document detailed info for each WBS component.'},
+      {label:'Establish Scope Baseline', detail:'Scope Statement + WBS + WBS Dictionary = Scope Baseline. Requires formal approval.'},
+    ],
+    concepts:[
+      {term:'WBS (Work Breakdown Structure)', def:'Hierarchical decomposition of the TOTAL project scope into manageable components. Organized around DELIVERABLES, not activities.',
+       subpoints:['100% Rule: WBS must capture 100% of project scope — no more, no less','Level 1: Project title','Level 2: Major deliverables or phases','Level 3+: Sub-deliverables','Lowest level: Work Packages']},
+      {term:'Work Package', def:'Lowest level of the WBS where cost and duration can be estimated and managed. Should follow the 8/80 Rule: no less than 8 hours, no more than 80 hours of work.',
+       subpoints:['Basis for scheduling, cost estimating, and resource assignment','Does NOT decompose further into activities (that happens in 6.2 Define Activities)']},
+      {term:'WBS Dictionary', def:'Detailed document for each WBS component providing: description, responsible party, acceptance criteria, associated activities, required resources, schedule milestones, cost estimates, quality requirements.'},
+      {term:'Scope Baseline', def:'Approved version of: Project Scope Statement + WBS + WBS Dictionary. Changes require formal Integrated Change Control.',
+       subpoints:['Used to compare actual scope to planned scope','Basis for Validate Scope (5.5) and Control Scope (5.6)']},
+      {term:'Control Account', def:'Management control point above work packages where scope, budget, and schedule are integrated and compared to Earned Value (EV).'},
+    ],
+    tips:['100% Rule is critical: WBS must capture ALL scope — nothing extra, nothing missing.','WBS is organized around DELIVERABLES, not processes or activities.','Work packages have both cost AND duration estimates (unlike higher levels).','WBS ≠ project schedule. WBS shows WHAT; the schedule shows WHEN.']
+  },
+
+  { id:'5.5', name:'Validate Scope', ka:'5. Project Scope Management', pg:'mc',
+    purpose:'Formalize acceptance of the completed project deliverables by the customer or sponsor.',
+    inputs:['Project Management Plan','Project Documents','Verified Deliverables','Work Performance Data'],
+    tools:['Inspection','Decision Making'],
+    outputs:['Accepted Deliverables','Work Performance Information','Change Requests','Project Documents Updates'],
+    sequence: [
+      {label:'Receive Verified Deliverables (from 8.3)', detail:'Control Quality (8.3) verifies deliverables meet internal quality standards first.'},
+      {label:'Inspect Deliverables', detail:'Review against acceptance criteria in the scope statement and requirements documentation.'},
+      {label:'Customer Decision', detail:'Customer/sponsor accepts or rejects each deliverable.'},
+      {label:'Accepted Deliverables → Close (4.7)', detail:'Accepted deliverables feed into 4.7 Close Project/Phase.'},
+      {label:'Rejected → Change Request', detail:'Rejected deliverables generate change requests for defect repair.'},
+    ],
+    concepts:[
+      {term:'Accepted Deliverables', def:'Deliverables formally signed off by the customer/sponsor as meeting acceptance criteria. Feed directly into 4.7 Close Project or Phase.'},
+      {term:'Control Quality vs. Validate Scope', def:'Two different but sequential quality activities:',
+       subpoints:['Control Quality (8.3): INTERNAL check — does the deliverable meet quality standards? Produces Verified Deliverables.','Validate Scope (5.5): EXTERNAL check — does the customer ACCEPT the deliverable? Produces Accepted Deliverables.','Order: 8.3 first → then 5.5']},
+      {term:'Inspection', def:'Structured examination to determine whether a deliverable conforms to documented standards. Also called: review, product review, audit, walkthrough.'},
+    ],
+    tips:['Validate Scope = CUSTOMER acceptance. Control Quality = INTERNAL quality check.','Control Quality (8.3) feeds Verified Deliverables to Validate Scope (5.5).','Validate Scope occurs in EVERY phase, not just at the end.','Even if quality passes (8.3), the customer can still reject a deliverable in 5.5.']
+  },
+
+  { id:'5.6', name:'Control Scope', ka:'5. Project Scope Management', pg:'mc',
+    purpose:'Monitor the status of the project and product scope and manage changes to the scope baseline.',
+    inputs:['Project Management Plan','Project Documents','Work Performance Data','OPAs'],
+    tools:['Data Analysis (variance analysis, trend analysis)'],
+    outputs:['Work Performance Information','Change Requests','Project Management Plan Updates','Project Documents Updates','OPA Updates'],
+    concepts:[
+      {term:'Scope Creep', def:'Unauthorized expansion of project or product scope WITHOUT adjusting time, cost, or resources. The primary risk to control.',
+       subpoints:['Caused by: unclear requirements, poor change control, stakeholder pressure, gold plating','Prevention: rigorous change control (4.6), clear scope statement, documented exclusions']},
+      {term:'Gold Plating', def:'Adding extra features not in scope without authorization — the PM\'s version of scope creep. Consumes resources without adding approved value.',
+       subpoints:['Gold plating by the team: adding features the customer did not ask for','Leads to wasted effort and potential budget overrun','Always get authorization before adding features']},
+      {term:'Variance Analysis', def:'Compares actual scope performance vs. the scope baseline to determine cause, magnitude, and need for corrective action.'},
+    ],
+    tips:['Control Scope prevents SCOPE CREEP — requires all changes go through 4.6 ICC.','Control Scope is ongoing monitoring — it does NOT accept deliverables (that is 5.5).','All scope change requests must go through 4.6 Perform Integrated Change Control.','Scope creep ≠ approved changes. Scope creep is unauthorized.']
+  },
+
+  // ===== 6. SCHEDULE =====
+  { id:'6.1', name:'Plan Schedule Management', ka:'6. Project Schedule Management', pg:'plan',
+    purpose:'Establish policies, procedures, and documentation for planning, developing, managing, executing, and controlling the project schedule.',
+    inputs:['Project Charter','Project Management Plan','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Analysis','Meetings'],
+    outputs:['Schedule Management Plan'],
+    concepts:[
+      {term:'Schedule Management Plan', def:'Defines how the project schedule will be developed and managed.',
+       subpoints:['Scheduling methodology: CPM, CCM, Agile, etc.','Level of accuracy: rounding rules for duration estimates','Units of measure: hours, days, weeks','Control thresholds: acceptable variance (e.g., ±10% SPI)','Rules of performance measurement: how EVM will be applied','Reporting formats: schedule reports format and frequency']},
+      {term:'Scheduling Methodologies', def:'Different frameworks for building schedules:',
+       subpoints:['Critical Path Method (CPM): deterministic, calculates float — most common','Critical Chain Method (CCM): focuses on resource constraints and buffers','Agile/Adaptive: iterations/sprints, rolling wave','Program Evaluation and Review Technique (PERT): probabilistic, three-point estimates']},
+    ],
+    tips:['Output is ONLY the Schedule Management Plan — the actual schedule is built in 6.5.','The plan defines the rules for estimating: units of measure, acceptable variance thresholds, reporting format.']
+  },
+
+  { id:'6.2', name:'Define Activities', ka:'6. Project Schedule Management', pg:'plan',
+    purpose:'Identify and document specific actions to be performed to produce the project deliverables.',
+    inputs:['Project Management Plan','EEFs','OPAs'],
+    tools:['Expert Judgment','Decomposition','Rolling Wave Planning','Meetings'],
+    outputs:['Activity List','Activity Attributes','Milestone List','Change Requests','Project Management Plan Updates'],
+    concepts:[
+      {term:'Activity List', def:'Comprehensive list of ALL schedule activities including their IDs, names, and scope descriptions. All activities needed to produce deliverables.'},
+      {term:'Activity Attributes', def:'Details about each activity to support scheduling and resource planning.',
+       subpoints:['Activity ID and WBS ID','Activity name and description','Predecessor and successor activities','Leads and lags','Resource requirements','Imposed dates and constraints','Assumptions and assumptions']},
+      {term:'Milestone', def:'Significant point or event with ZERO duration. Used to mark key checkpoints, approvals, or deliverable completions.',
+       subpoints:['Mandatory milestones: externally imposed (e.g., regulatory deadline)','Optional milestones: PM/team defined (e.g., phase gate review)','Examples: project kickoff, design approval, contract signed, phase 1 complete']},
+      {term:'Rolling Wave Planning', def:'Progressive elaboration for scheduling. Near-term work is planned in detail; far-future work is planned at a higher level. More detail added as the project progresses.',
+       subpoints:['Avoids wasted effort on planning work that may change','Common in Agile-influenced environments']},
+      {term:'WBS vs. Activities', def:'Important distinction:',
+       subpoints:['WBS Work Packages = DELIVERABLES (nouns: "Training Manual","Software Module")','Activities = ACTIONS required to produce them (verbs: "Write Training Manual","Code Login Module")']},
+    ],
+    tips:['Activities are decomposed FROM WBS work packages — they are the specific actions, not the deliverables.','Milestones have ZERO duration — they mark events, not work.','Rolling Wave = plan near-term in detail, leave future at high level.']
+  },
+
+  { id:'6.3', name:'Sequence Activities', ka:'6. Project Schedule Management', pg:'plan',
+    purpose:'Identify and document relationships among project activities to create a logical sequence of work.',
+    inputs:['Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Precedence Diagramming Method (PDM)','Dependency Determination','Leads and Lags'],
+    outputs:['Project Schedule Network Diagram','Project Documents Updates'],
+    sequence: [
+      {label:'Finish-to-Start (FS) — Most Common', detail:'Predecessor must FINISH before successor can START. Example: "Design must finish before coding starts."'},
+      {label:'Start-to-Start (SS)', detail:'Predecessor must START before successor can START. Example: "Excavation must start before grading can start." (Both may run in parallel.)'},
+      {label:'Finish-to-Finish (FF)', detail:'Predecessor must FINISH before successor can FINISH. Example: "Testing must finish before QA report can finish."'},
+      {label:'Start-to-Finish (SF) — Rarest', detail:'Predecessor must START before successor can FINISH. Example: "New system must start before old system can be shut down." (Shift handovers.)'},
+    ],
+    concepts:[
+      {term:'Precedence Diagramming Method (PDM)', def:'Standard network diagramming method using BOXES (nodes) for activities and ARROWS for dependencies. Also called Activity-on-Node (AON).',
+       subpoints:['Supports all 4 relationship types (FS, SS, FF, SF)','Arrow = dependency direction: from predecessor to successor','Activity-on-Arrow (AOA) is an older method — uses arrows for activities']},
+      {term:'Lead vs. Lag', def:'Time adjustments applied to dependencies:',
+       subpoints:['Lead: ADVANCE the successor — overlap activities. Negative lag. Speeds things up. Example: Start web design 5 days BEFORE DB design finishes.','Lag: INSERT A DELAY between activities. Positive delay. Slows things down. Example: Wait 3 days for concrete to cure before framing.']},
+      {term:'Dependency Types', def:'Four classifications based on source and flexibility:',
+       subpoints:['Mandatory (Hard Logic): required by nature of work or contract. Cannot be changed. Example: Foundation before walls.','Discretionary (Soft Logic): preferred based on best practice. Can be changed if needed. Example: Start testing before coding finishes (normally you would not, but could).','External: project depends on non-project activity. Example: Regulatory approval before construction.','Internal: dependency within the project team\'s control.']},
+    ],
+    tips:['Know all 4 PDM relationships: FS (most common), SS, FF, SF (rarest).','Lead = overlap (speeds up); Lag = wait (slows down).','Mandatory dependencies drive the critical path.','An arrow in a network diagram points FROM predecessor TO successor.']
+  },
+
+  { id:'6.4', name:'Estimate Activity Durations', ka:'6. Project Schedule Management', pg:'plan',
+    purpose:'Estimate the number of work periods needed to complete individual schedule activities with estimated resources.',
+    inputs:['Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Expert Judgment','Analogous Estimating','Parametric Estimating','Three-Point Estimating','Bottom-Up Estimating','Data Analysis','Decision Making','Meetings'],
+    outputs:['Duration Estimates','Basis of Estimates','Project Documents Updates'],
+    sequence: [
+      {label:'Analogous (Top-Down) — Least Accurate, Fastest', detail:'Use data from similar past projects. Good when little information is available. Rough accuracy: −25% to +75%.'},
+      {label:'Parametric — More Accurate', detail:'Statistical relationship: Rate × Quantity (e.g., 40 hrs/module × 10 modules = 400 hrs). Accuracy depends on model quality.'},
+      {label:'Three-Point (PERT) — Accounts for Uncertainty', detail:'PERT: (O + 4M + P) / 6. Triangular: (O + M + P) / 3. Standard Deviation (PERT): (P − O) / 6.'},
+      {label:'Bottom-Up — Most Accurate, Most Time-Consuming', detail:'Estimate each activity individually, then roll up. Most accurate. Accuracy: −5% to +10%.'},
+    ],
+    concepts:[
+      {term:'Analogous Estimating', def:'Uses historical data from similar past projects as the basis for current estimates. Top-down, fast, less accurate. Best when little detail is available.',
+       subpoints:['Pros: Quick, low cost, useful early in project','Cons: Less accurate, depends on how "similar" the analogy is','Accuracy range: −25% to +75% (rough order of magnitude)']},
+      {term:'Parametric Estimating', def:'Uses statistical relationships between historical data and project variables.',
+       subpoints:['Example: $500/sq ft × 2000 sq ft = $1,000,000','Example: 40 hrs/module × 15 modules = 600 hours','More accurate than analogous if the model is valid and reliable']},
+      {term:'Three-Point Estimating', def:'Accounts for uncertainty using three scenarios:',
+       subpoints:['O = Optimistic (best case)','M = Most Likely (realistic case)','P = Pessimistic (worst case)','PERT Formula: (O + 4M + P) / 6  — the "4" weights the most likely estimate','Triangular Formula: (O + M + P) / 3  — equal weighting','Standard Deviation (PERT): (P − O) / 6  — measures uncertainty spread','Example: O=4, M=6, P=14 → PERT = (4+24+14)/6 = 7 days']},
+      {term:'Bottom-Up Estimating', def:'Estimates each individual activity or work package, then aggregates to get totals. Most accurate method but most time-consuming.',
+       subpoints:['Requires detailed WBS and activity list','Best for projects with well-defined scope','Accuracy range: −5% to +10%']},
+      {term:'Duration vs. Effort', def:'Critical distinction:',
+       subpoints:['Duration: calendar time from start to finish (e.g., 5 days)','Effort (Work): total person-hours required (e.g., 40 person-hours)','A 2-person task taking 2 days = 4 days effort, 2 days duration']},
+      {term:'Reserve Analysis', def:'Adds contingency reserves (time buffers) to handle known unknowns — identified risks with uncertain timing.'},
+    ],
+    tips:['PERT formula: (O + 4M + P) / 6. Standard Deviation: (P − O) / 6.','Analogous = fast, top-down, least accurate. Bottom-up = slow, most accurate.','Duration ≠ Effort. Common exam trap.','Basis of Estimates document explains HOW and WHY each estimate was made.']
+  },
+
+  { id:'6.5', name:'Develop Schedule', ka:'6. Project Schedule Management', pg:'plan',
+    purpose:'Analyze activity sequences, durations, resource requirements, and schedule constraints to create the project schedule model.',
+    inputs:['Project Management Plan','Project Documents','Agreements','EEFs','OPAs'],
+    tools:['Schedule Network Analysis','Critical Path Method (CPM)','Resource Optimization','Data Analysis','Leads and Lags','Schedule Compression','Project Management Information System'],
+    outputs:['Schedule Baseline','Project Schedule','Schedule Data','Project Calendars','Change Requests','Project Management Plan Updates'],
+    sequence: [
+      {label:'Forward Pass (Early Dates)', detail:'Calculate Early Start (ES) and Early Finish (EF) for each activity. Start at the beginning, move forward through the network.'},
+      {label:'Backward Pass (Late Dates)', detail:'Calculate Late Start (LS) and Late Finish (LF). Start at the end, move backward through the network.'},
+      {label:'Calculate Float (Slack)', detail:'Total Float = LS − ES (or LF − EF). Activities with zero float are on the Critical Path.'},
+      {label:'Identify Critical Path', detail:'The path(s) with ZERO total float. Longest path through the network = earliest completion date.'},
+      {label:'Apply Schedule Compression (if needed)', detail:'Fast Tracking (overlap activities — increases risk) or Crashing (add resources — increases cost).'},
+    ],
+    concepts:[
+      {term:'Critical Path Method (CPM)', def:'Calculates the longest path through the network. Determines earliest project completion date. Activities on the critical path have zero total float.',
+       subpoints:['Longest path = Critical Path','Zero total float on critical path','If any critical path activity is delayed, the project end date is delayed','There can be MULTIPLE critical paths']},
+      {term:'Float (Slack) Types', def:'Three types of float:',
+       subpoints:['Total Float: time an activity can be delayed without delaying the PROJECT end date. Formula: LS − ES or LF − EF.','Free Float: time an activity can be delayed without delaying the EARLY START of its immediate successor.','Project Float: time the project can be delayed without missing the customer-imposed deadline.']},
+      {term:'Schedule Compression Techniques', def:'Methods to shorten schedule without changing project scope:',
+       subpoints:['Fast Tracking: do activities in parallel that were planned sequentially. INCREASES RISK. No additional cost (usually).','Crashing: add resources (overtime, more people) to critical path activities. INCREASES COST. Does not necessarily increase risk.','Rule: Try fast tracking first if risk is acceptable; crash as a last resort due to cost.']},
+      {term:'Resource Optimization', def:'Adjusting schedule based on resource availability:',
+       subpoints:['Resource Leveling: adjust start/finish dates to resolve resource conflicts. May extend the schedule.','Resource Smoothing: adjust activities within float to smooth resource peaks. Does NOT change critical path or project end date.']},
+      {term:'Near-Critical Path', def:'Path with very small (but non-zero) total float. Monitor closely — any small delay could make it critical.'},
+      {term:'Negative Float', def:'When LS − ES < 0. The project is already behind the target end date. Schedule compression is needed.'},
+    ],
+    tips:['Critical path = longest path = zero total float (NOT necessarily zero free float).','Fast tracking increases RISK; crashing increases COST. Know the difference.','Negative float means the project is behind its target date — action required.','Multiple critical paths are possible — all must be monitored equally.','Resource leveling may EXTEND the project end date; resource smoothing keeps the end date fixed.']
+  },
+
+  { id:'6.6', name:'Control Schedule', ka:'6. Project Schedule Management', pg:'mc',
+    purpose:'Monitor the status of the project to update the project schedule and manage changes to the schedule baseline.',
+    inputs:['Project Management Plan','Project Documents','Work Performance Data','OPAs'],
+    tools:['Data Analysis (earned value, iteration burndown, performance reviews, trend analysis, variance analysis)','Critical Path Method','Resource Optimization','Schedule Compression','Project Management Information System'],
+    outputs:['Work Performance Information','Schedule Forecasts','Change Requests','Project Management Plan Updates','Project Documents Updates','OPA Updates'],
+    concepts:[
+      {term:'Schedule EVM Formulas', def:'Key Earned Value formulas for schedule control:',
+       subpoints:['PV (Planned Value): authorized budget for scheduled work (what you PLANNED to accomplish by now)','EV (Earned Value): value of work actually performed, expressed in budget terms','SV (Schedule Variance) = EV − PV. Negative = behind schedule; Positive = ahead of schedule.','SPI (Schedule Performance Index) = EV / PV. < 1.0 = behind; > 1.0 = ahead.']},
+      {term:'Schedule Forecasting', def:'Predicting future schedule performance based on current data.',
+       subpoints:['EAC (time): estimated final duration based on current SPI','If SPI < 1.0, the project will likely finish later than planned unless corrective action is taken']},
+      {term:'Iteration Burndown Chart', def:'Agile tool tracking remaining work vs. time in a sprint/iteration. Shows if the team is on track to complete iteration goals.'},
+    ],
+    tips:['SV = EV − PV. SV < 0 = behind schedule. SPI < 1.0 = behind schedule (same message).','Use schedule compression (fast track / crash) if schedule variance is significant.','Burndown charts are used in Agile; S-curves are used in predictive approaches.']
+  },
+
+  // ===== 7. COST =====
+  { id:'7.1', name:'Plan Cost Management', ka:'7. Project Cost Management', pg:'plan',
+    purpose:'Define how project costs will be estimated, budgeted, managed, monitored, and controlled.',
+    inputs:['Project Charter','Project Management Plan','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Analysis','Meetings'],
+    outputs:['Cost Management Plan'],
+    concepts:[
+      {term:'Cost Management Plan', def:'Defines the framework for all cost management activities.',
+       subpoints:['Units of measure: hours, days, dollars, etc.','Level of precision: rounding rules for estimates','Level of accuracy: acceptable range (e.g., −10% to +25%)','Control thresholds: when to take action (e.g., CPI < 0.9)','Rules of performance measurement: EVM rules, % complete method','Reporting formats: cost report structure and frequency']},
+      {term:'Precision vs. Accuracy', def:'Two distinct quality metrics for cost estimates:',
+       subpoints:['Precision: consistent, repeatable results (regardless of correctness) — e.g., always estimating $105K for a $100K item','Accuracy: closeness to the true value — e.g., estimating $99K for a $100K item','Can be precise but inaccurate, or accurate but imprecise']},
+    ],
+    tips:['Output is ONLY the Cost Management Plan — actual estimates come in 7.2.','Precision ≠ Accuracy: you can be consistently wrong (precise but inaccurate).']
+  },
+
+  { id:'7.2', name:'Estimate Costs', ka:'7. Project Cost Management', pg:'plan',
+    purpose:'Develop an approximation of the monetary resources needed to complete project work.',
+    inputs:['Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Expert Judgment','Analogous Estimating','Parametric Estimating','Bottom-Up Estimating','Three-Point Estimating','Data Analysis','Project Management Information System','Decision Making'],
+    outputs:['Cost Estimates','Basis of Estimates','Project Documents Updates'],
+    sequence: [
+      {label:'Rough Order of Magnitude (ROM)', detail:'Early estimate with no detail. Accuracy: −25% to +75%. Used in project selection.'},
+      {label:'Budget Estimate', detail:'Planning phase. Accuracy: −10% to +25%. Based on WBS.'},
+      {label:'Definitive Estimate', detail:'Detailed phase. Accuracy: −5% to +10%. Based on detailed design and bottom-up estimating.'},
+    ],
+    concepts:[
+      {term:'Cost Types', def:'Understanding the nature of costs:',
+       subpoints:['Direct Costs: directly attributed to the project (labor, materials, equipment)','Indirect Costs: overhead shared across projects (rent, utilities, admin salaries)','Fixed Costs: do not change with activity level (equipment purchase, facility rental fee)','Variable Costs: change with amount of work (hourly labor, materials per unit)','Sunk Costs: already spent — CANNOT be recovered. Do NOT let sunk costs influence future decisions.','Opportunity Cost: value of the next best alternative foregone. Lower opportunity cost = better choice.']},
+      {term:'Contingency Reserve', def:'Budget for KNOWN UNKNOWNS — identified risks with quantified probability and impact. Part of the COST BASELINE. Managed by the PM.',
+       subpoints:['Added during 7.2 Estimate Costs','Based on risk register data','Can be released as risks pass without occurring']},
+      {term:'Basis of Estimates', def:'Supporting documentation explaining how estimates were derived, including assumptions, constraints, range of possible estimates, and confidence level.'},
+    ],
+    tips:['Analogous = top-down, fast, least accurate. Bottom-up = slow, most accurate.','SUNK COSTS are irrelevant to future decisions — ignore them when making go/no-go decisions.','Cost estimates should include contingency reserves for known unknowns.','ROM estimate accuracy: −25% to +75%; Definitive: −5% to +10%.']
+  },
+
+  { id:'7.3', name:'Determine Budget', ka:'7. Project Cost Management', pg:'plan',
+    purpose:'Aggregate the estimated costs of individual activities or work packages to establish an authorized cost baseline.',
+    inputs:['Project Management Plan','Project Documents','Business Documents','Agreements','EEFs','OPAs'],
+    tools:['Expert Judgment','Cost Aggregation','Data Analysis','Historical Information Review','Funding Limit Reconciliation','Financing'],
+    outputs:['Cost Baseline','Project Funding Requirements','Project Documents Updates'],
+    sequence: [
+      {label:'Activity Cost Estimates', detail:'Bottom-up estimates from 7.2 for each activity.'},
+      {label:'Work Package Costs', detail:'Aggregate activity estimates → Work Package cost.'},
+      {label:'Control Account Costs', detail:'Aggregate work packages → Control Account level.'},
+      {label:'Project Estimate', detail:'Total of all control accounts = project cost estimate.'},
+      {label:'+ Contingency Reserves', detail:'Add contingency for known unknowns → Cost Baseline (PMB).'},
+      {label:'+ Management Reserves', detail:'Add management reserve for unknown unknowns → Total Budget (BAC).'},
+    ],
+    concepts:[
+      {term:'Cost Baseline (PMB — Performance Measurement Baseline)', def:'Approved time-phased budget used to measure and monitor cost performance. = Project Estimate + Contingency Reserves. Does NOT include Management Reserves.',
+       subpoints:['Displayed as an S-curve (cumulative costs over time)','Changes to the cost baseline require formal change control (4.6)']},
+      {term:'Reserves Comparison', def:'Two types of budget reserves:',
+       subpoints:['Contingency Reserve: for KNOWN UNKNOWNS. Part of the Cost Baseline. PM can use without approval.','Management Reserve: for UNKNOWN UNKNOWNS. NOT part of the Cost Baseline. Requires management approval to use.']},
+      {term:'BAC (Budget at Completion)', def:'Total planned value for the entire project = the Cost Baseline value. Used in all EVM calculations.'},
+      {term:'Funding Limit Reconciliation', def:'Comparing scheduled expenditures to funding limits and adjusting the schedule if necessary to stay within funding constraints.'},
+    ],
+    tips:['Cost Baseline = estimates + contingency reserves. Does NOT include management reserves.','Total Budget = Cost Baseline + Management Reserves.','BAC = Cost Baseline = what you planned to spend on the entire project.','Time-phased budget = money allocated per period (monthly, quarterly).']
+  },
+
+  { id:'7.4', name:'Control Costs', ka:'7. Project Cost Management', pg:'mc',
+    purpose:'Monitor the status of project costs to update the project costs and manage changes to the cost baseline.',
+    inputs:['Project Management Plan','Project Documents','Project Funding Requirements','Work Performance Data','OPAs'],
+    tools:['Expert Judgment','Data Analysis (earned value, variance, trend analysis, reserve analysis)','Project Management Information System','Decision Making'],
+    outputs:['Work Performance Information','Cost Forecasts','Change Requests','Project Management Plan Updates','Project Documents Updates','OPA Updates'],
+    sequence: [
+      {label:'EVM Baseline Values', detail:'BAC (Budget at Completion) = total budget. PV (Planned Value) = budgeted cost of scheduled work.'},
+      {label:'Measure Performance', detail:'EV (Earned Value) = % complete × BAC. AC (Actual Cost) = what was actually spent.'},
+      {label:'Calculate Variances', detail:'CV = EV − AC (negative = over budget). SV = EV − PV (negative = behind schedule).'},
+      {label:'Calculate Indices', detail:'CPI = EV / AC (< 1.0 = over budget). SPI = EV / PV (< 1.0 = behind schedule).'},
+      {label:'Forecast at Completion', detail:'EAC = BAC / CPI (most common). ETC = EAC − AC. VAC = BAC − EAC.'},
+      {label:'TCPI', detail:'TCPI = (BAC − EV) / (BAC − AC). Efficiency needed to finish on budget. > 1.0 = must improve.'},
+    ],
+    concepts:[
+      {term:'Core EVM Values', def:'Three building blocks of EVM:',
+       subpoints:['PV (Planned Value): authorized budget assigned to scheduled work. "What we planned to spend by now."','EV (Earned Value): value of work actually completed, expressed in budget terms. "What we EARNED by doing the work."','AC (Actual Cost): total cost incurred for work performed. "What we actually spent."']},
+      {term:'Variance Formulas', def:'Measure deviation from plan:',
+       subpoints:['CV (Cost Variance) = EV − AC. Negative = over budget; Positive = under budget.','SV (Schedule Variance) = EV − PV. Negative = behind schedule; Positive = ahead of schedule.']},
+      {term:'Performance Indices', def:'Efficiency ratios (negative interpretation = bad):',
+       subpoints:['CPI (Cost Performance Index) = EV / AC. < 1.0 = over budget; > 1.0 = under budget; = 1.0 = on budget.','SPI (Schedule Performance Index) = EV / PV. < 1.0 = behind; > 1.0 = ahead; = 1.0 = on schedule.']},
+      {term:'Forecast Formulas', def:'Predicting final cost:',
+       subpoints:['EAC = BAC / CPI (most common — assumes future work performed at current CPI)','EAC = AC + ETC (bottom-up re-estimate of remaining work)','EAC = AC + (BAC − EV) (assumes future work at planned rate)','ETC (Estimate to Complete) = EAC − AC (cost to finish remaining work)','VAC (Variance at Completion) = BAC − EAC. Negative = will go over budget.']},
+      {term:'TCPI (To-Complete Performance Index)', def:'Efficiency needed to complete within the BAC budget. TCPI = (BAC − EV) / (BAC − AC). If > 1.0: must work more efficiently. If < 1.0: can afford to slow down.'},
+    ],
+    tips:['CV and SV: NEGATIVE = BAD. CPI and SPI: < 1.0 = BAD. This is consistent — memorize the pattern.','EAC = BAC/CPI is the most common and most tested EAC formula.','TCPI > 1.0 means you need to improve efficiency to finish on budget — usually unrealistic if the gap is large.','Know all EVM formulas — multiple exam questions will test these.']
+  },
+
+  // ===== 8. QUALITY =====
+  { id:'8.1', name:'Plan Quality Management', ka:'8. Project Quality Management', pg:'plan',
+    purpose:'Identify quality requirements and/or standards for the project and its deliverables and document how compliance will be demonstrated.',
+    inputs:['Project Charter','Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Gathering','Data Analysis','Decision Making','Data Representation (flowcharts, logical data model, matrix diagrams, mind maps)','Test and Inspection Planning','Meetings'],
+    outputs:['Quality Management Plan','Quality Metrics','Project Management Plan Updates','Project Documents Updates'],
+    sequence: [
+      {label:'Cost of Conformance (Prevention Costs)', detail:'Training, document processes, equipment, time to do it right. PREVENTS defects.'},
+      {label:'Cost of Conformance (Appraisal Costs)', detail:'Testing, destructive testing, inspections, audits. FINDS defects before delivery.'},
+      {label:'Cost of Non-Conformance (Internal Failure)', detail:'Rework, scrap, re-inspection. Defects found BEFORE delivery.'},
+      {label:'Cost of Non-Conformance (External Failure)', detail:'Liabilities, warranty work, lost business, customer complaints. Defects found AFTER delivery. Most expensive.'},
+    ],
+    concepts:[
+      {term:'Quality Management Plan', def:'Describes how applicable policies, procedures, and guidelines will be implemented to achieve quality objectives.',
+       subpoints:['Quality standards to use (ISO 9001, CMMI, etc.)','Quality objectives and metrics','Quality roles and responsibilities','Audit procedures','Review and testing approach']},
+      {term:'Cost of Quality (COQ)', def:'Total cost of all quality efforts. Prevention is cheaper than inspection; inspection is cheaper than failure.',
+       subpoints:['Total COQ = Cost of Conformance + Cost of Non-Conformance','Prevention costs (cheapest): training, process documentation, quality planning','Appraisal costs: testing, inspections, audits','Internal failure costs: rework, scrap — caught before delivery','External failure costs: warranty, returns, lawsuits — caught after delivery (MOST expensive)']},
+      {term:'Quality Concepts', def:'Key quality philosophy concepts:',
+       subpoints:['Grade vs. Quality: Grade = category based on features (low grade may be acceptable). Quality = meeting requirements (low quality is NOT acceptable).','Prevention over Inspection: plan quality IN; do not inspect it in after the fact.','Kaizen: continuous improvement through small incremental changes.','Total Quality Management (TQM): organization-wide quality improvement commitment.','Six Sigma: data-driven approach to eliminate defects (3.4 defects per million).']},
+      {term:'Quality Metrics', def:'Specific, measurable definitions of quality. Examples: defect rate ≤ 1%, system availability ≥ 99.9%, on-time delivery ≥ 95%.'},
+    ],
+    tips:['Prevention > Inspection > Failure in terms of cost. Always cheaper to prevent.','COQ = Conformance (prevention + appraisal) + Non-Conformance (internal + external failure).','Grade and quality are DIFFERENT: low grade can be acceptable, low quality never is.','Quality is PLANNED IN, not inspected in.']
+  },
+
+  { id:'8.2', name:'Manage Quality', ka:'8. Project Quality Management', pg:'exec',
+    purpose:'Translate the quality management plan into executable quality activities incorporating the organization\'s quality policies.',
+    inputs:['Project Management Plan','Project Documents','OPAs'],
+    tools:['Data Gathering','Data Analysis','Decision Making','Data Representation','Audits','Design for X (DfX)','Problem Solving','Quality Improvement Methods'],
+    outputs:['Quality Reports','Test and Evaluation Documents','Change Requests','Project Management Plan Updates','Project Documents Updates'],
+    concepts:[
+      {term:'Manage Quality vs. Control Quality', def:'Two distinct quality processes with different focus:',
+       subpoints:['Manage Quality (8.2) = Quality ASSURANCE — are we following the RIGHT PROCESSES? Proactive.','Control Quality (8.3) = Quality CONTROL — are our DELIVERABLES meeting standards? Reactive.','Order: Plan Quality (8.1) → Manage Quality (8.2) → Control Quality (8.3)']},
+      {term:'Quality Audit', def:'Structured, independent review to determine whether project activities comply with organizational policies, processes, and procedures.',
+       subpoints:['Identifies gaps and non-conformities in processes','Confirms approved change requests were implemented','Collects lessons learned for process improvement','Can be internal or external; planned or unannounced']},
+      {term:'Design for X (DfX)', def:'Technical guidelines for optimizing product design for specific factors:',
+       subpoints:['DfR (Reliability): design to maximize useful life','DfM (Manufacturability): design to ease production','DfT (Testability): design to facilitate testing','DfS (Sustainability): design with environmental considerations']},
+      {term:'Quality Improvement Methods', def:'Kaizen (continuous improvement), Plan-Do-Check-Act (PDCA) cycle, Six Sigma DMAIC (Define-Measure-Analyze-Improve-Control).'},
+    ],
+    tips:['Manage Quality = quality assurance = checking PROCESSES. Not deliverables.','Audits check if processes are being followed — they identify areas for improvement.','Quality improvement is PROACTIVE — done before defects occur.']
+  },
+
+  { id:'8.3', name:'Control Quality', ka:'8. Project Quality Management', pg:'mc',
+    purpose:'Monitor and record results of quality activities to assess performance and ensure project outputs are complete, correct, and meet customer expectations.',
+    inputs:['Project Management Plan','Project Documents','Approved Change Requests','Deliverables','Work Performance Data','EEFs','OPAs'],
+    tools:['Data Gathering (checklists, statistical sampling, questionnaires)','Data Analysis (performance review, root cause analysis, variance analysis)','Inspection','Testing/Product Evaluations','Data Representation (cause-effect diagram, control charts, histogram, scatter diagram)','Meetings'],
+    outputs:['Quality Control Measurements','Verified Deliverables','Work Performance Information','Change Requests','Project Management Plan Updates','Project Documents Updates'],
+    sequence: [
+      {label:'Cause-and-Effect Diagram (Fishbone/Ishikawa)', detail:'Identifies ROOT CAUSES of defects. Categories: 6 M\'s — Man, Machine, Method, Material, Measurement, Mother Nature (Environment).'},
+      {label:'Control Chart', detail:'Shows process stability over time. UCL/LCL = ±3σ. Rule of 7: 7+ consecutive points on one side = investigate. Out of control = special cause variation.'},
+      {label:'Histogram', detail:'Shows frequency distribution of defects or data. Identifies patterns in variation.'},
+      {label:'Pareto Chart', detail:'Histogram ranked by frequency (highest to lowest). Based on 80/20 rule: 80% of problems from 20% of causes. Prioritizes what to fix first.'},
+      {label:'Scatter Diagram', detail:'Shows correlation between two variables. Strong correlation ≠ causation.'},
+      {label:'Run Chart (Trend Chart)', detail:'Shows process behavior over time — identifies trends and patterns.'},
+      {label:'Checksheet', detail:'Structured form for collecting and analyzing data in real-time.'},
+    ],
+    concepts:[
+      {term:'Seven Basic Quality Tools', def:'Tools for identifying and analyzing quality problems:',
+       subpoints:['1. Cause-and-Effect (Fishbone/Ishikawa): identifies root causes','2. Control Chart: monitors process stability over time','3. Histogram: shows frequency distribution','4. Pareto Chart: 80/20 rule — prioritize top issues','5. Scatter Diagram: shows correlation between variables','6. Checksheet: data collection form','7. Flow Chart / Process Map: shows process flow and decision points']},
+      {term:'Control Chart Rules', def:'Statistical rules for identifying special cause variation:',
+       subpoints:['UCL (Upper Control Limit): +3 standard deviations from mean','LCL (Lower Control Limit): −3 standard deviations from mean','Rule of 7: 7+ consecutive points on one side of the mean = out of control, investigate','Points outside UCL/LCL = immediate investigation required','Common Cause: normal/random variation within limits','Special Cause: non-random pattern — process is out of control']},
+      {term:'Verified Deliverables', def:'Deliverables that passed Control Quality inspection. These become INPUTS to 5.5 Validate Scope for customer acceptance.',
+       subpoints:['Control Quality (8.3) produces Verified Deliverables','Validate Scope (5.5) produces Accepted Deliverables']},
+      {term:'Statistical Sampling', def:'Inspecting a representative subset of a population instead of 100% inspection. More cost-effective when 100% inspection is impossible or too expensive.'},
+    ],
+    tips:['Control Quality produces VERIFIED deliverables → fed to 5.5 Validate Scope for ACCEPTED deliverables.','Rule of 7 on control charts: 7 consecutive on one side of mean = out of control.','Pareto Chart = prioritize — focus on the 20% of causes creating 80% of problems.','Fishbone diagram identifies ROOT CAUSES; Pareto identifies PRIORITY issues.']
+  },
+
+  // ===== 9. RESOURCE =====
+  { id:'9.1', name:'Plan Resource Management', ka:'9. Project Resource Management', pg:'plan',
+    purpose:'Define how to estimate, acquire, manage, and utilize physical and team resources.',
+    inputs:['Project Charter','Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Representation (hierarchical charts, responsibility assignment matrix, text-oriented formats)','Organizational Theory','Meetings'],
+    outputs:['Resource Management Plan','Team Charter','Project Documents Updates'],
+    sequence: [
+      {label:'Functional Organization', detail:'Grouped by specialty (IT, Finance, Marketing). PM has little to no authority. Resources belong to functional managers. PM role is Coordinator.'},
+      {label:'Matrix Organization (Weak → Balanced → Strong)', detail:'Mixed structure. Weak: PM acts as coordinator. Balanced: equal authority. Strong: PM has significant authority. Resources shared.'},
+      {label:'Projectized Organization', detail:'Teams organized around projects. PM has full authority. Resources dedicated to the project. Highest PM power.'},
+    ],
+    concepts:[
+      {term:'Resource Management Plan', def:'Provides guidance on how resources should be categorized, allocated, managed, and released.',
+       subpoints:['Resource identification: categories and types needed','Acquiring resources: internal negotiation vs. outside procurement','Roles and responsibilities: who does what','Team development: training and team building plans','Resource control: monitoring planned vs. actual use']},
+      {term:'RACI Chart', def:'Responsibility Assignment Matrix mapping roles to tasks using four designations:',
+       subpoints:['R (Responsible): person who does the work — can be multiple per task','A (Accountable): person ultimately responsible for success — must be EXACTLY ONE per task','C (Consulted): provides input before/during task — two-way communication','I (Informed): kept informed of progress/decisions — one-way communication','Rule: Only ONE A per task; cannot be both A and R without being careful about conflicts']},
+      {term:'OBS (Organizational Breakdown Structure)', def:'Hierarchical representation showing which organizational units are responsible for which WBS components.'},
+      {term:'RBS (Resource Breakdown Structure)', def:'Hierarchical list of resources by category and type (labor, material, equipment, supplies). Used for resource tracking.'},
+      {term:'Team Charter', def:'Document establishing team values, agreements, and operating guidelines. Covers: communication norms, decision-making processes, conflict resolution, meeting protocols.'},
+    ],
+    tips:['RACI: R does the work, A is ultimately responsible (exactly ONE A per task), C provides input, I is kept informed.','Projectized org = most PM authority. Functional org = least PM authority.','In a matrix org, team members report to BOTH the PM and functional manager (dual reporting).']
+  },
+
+  { id:'9.2', name:'Estimate Activity Resources', ka:'9. Project Resource Management', pg:'plan',
+    purpose:'Estimate team resources and the type and quantities of material, equipment, and supplies necessary to perform project work.',
+    inputs:['Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Expert Judgment','Bottom-Up Estimating','Analogous Estimating','Parametric Estimating','Data Analysis','Project Management Information System','Meetings'],
+    outputs:['Resource Requirements','Basis of Estimates','Resource Breakdown Structure','Project Documents Updates'],
+    concepts:[
+      {term:'Resource Requirements', def:'Identifies types and quantities of resources required for each work package.',
+       subpoints:['Human resources: names, roles, skills, hours required','Physical resources: equipment type, quantity, duration needed','Material resources: type, quantity, specifications']},
+      {term:'Resource Breakdown Structure (RBS)', def:'Hierarchical representation of resources by category and type. Used to track resource utilization and costs.',
+       subpoints:['Level 1: All project resources','Level 2: Category (Labor, Materials, Equipment)','Level 3: Type (e.g., Senior Developer, Concrete, Crane)']},
+    ],
+    tips:['Resource estimates tie directly to duration estimates from 6.4.','Bottom-up estimating is most accurate for resource estimation.','Resource requirements feed directly into 9.3 Acquire Resources and schedule development (6.5).']
+  },
+
+  { id:'9.3', name:'Acquire Resources', ka:'9. Project Resource Management', pg:'exec',
+    purpose:'Obtain team members, facilities, equipment, materials, supplies, and other resources necessary to complete project work.',
+    inputs:['Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Decision Making','Interpersonal & Team Skills (negotiation)','Pre-Assignment','Virtual Teams'],
+    outputs:['Physical Resource Assignments','Project Team Assignments','Resource Calendars','Change Requests','Project Management Plan Updates','Project Documents Updates','EEF Updates','OPA Updates'],
+    concepts:[
+      {term:'Pre-Assignment', def:'Team members are identified and committed to the project in advance. Common when:',
+       subpoints:['Named in the project charter as required resources','Project is a competitive proposal requiring specific staff','Staff identified during proposal phase','Specific expertise available only from certain individuals']},
+      {term:'Negotiation for Resources', def:'In a matrix organization, the PM must negotiate with functional managers for team members.',
+       subpoints:['PM has limited formal authority over functional managers in weak/balanced matrix','Influencing skills, relationships, and expert power are key tools','PM must negotiate timing, skills level, and duration of resource assignment']},
+      {term:'Virtual Teams', def:'Groups with little or no face-to-face time. Advantages and challenges:',
+       subpoints:['Advantages: access to global talent, lower travel costs, flexible schedules','Challenges: communication difficulties, lack of informal bonds, timezone issues, cultural differences','Requires more formal communication planning and structured check-ins']},
+      {term:'Resource Calendars', def:'Identify when and how long identified project resources will be available. Accounts for holidays, vacations, and part-time availability.'},
+    ],
+    tips:['In a matrix org, the PM negotiates with functional managers — does not simply assign resources.','Virtual teams require MORE formal communication planning.','Resource calendars show resource availability, not work schedules.']
+  },
+
+  { id:'9.4', name:'Develop Team', ka:'9. Project Resource Management', pg:'exec',
+    purpose:'Improve competencies, team member interaction, and the overall team environment to enhance project performance.',
+    inputs:['Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Colocation','Virtual Teams','Communication Technology','Interpersonal & Team Skills','Recognition and Rewards','Training','Individual and Team Assessments','Meetings'],
+    outputs:['Team Performance Assessments','Change Requests','Project Management Plan Updates','Project Documents Updates','EEF Updates','OPA Updates'],
+    sequence: [
+      {label:'Forming', detail:'Team members meet and learn about the project and each other. Polite, cautious. PM DIRECTS (tells the team what to do).'},
+      {label:'Storming', detail:'Conflicts arise over work approach, roles, priorities. PM COACHES (guides through conflict, helps team find solutions).'},
+      {label:'Norming', detail:'Team resolves differences, establishes norms, and builds cohesion. PM FACILITATES (supports consensus building).'},
+      {label:'Performing', detail:'Team works effectively toward goals with high trust and autonomy. PM DELEGATES (empowers team to self-manage).'},
+      {label:'Adjourning', detail:'Team wraps up work and disbands. PM CELEBRATES success and facilitates closure.'},
+    ],
+    concepts:[
+      {term:'Tuckman\'s Ladder (5 Stages)', def:'Model of team development stages. PM\'s goal: accelerate progression to Performing.',
+       subpoints:['Forming: orientation, dependency on PM','Storming: conflicts over approach — most challenging phase','Norming: cohesion develops, ground rules established','Performing: high productivity, self-managing','Adjourning: disengagement and closure']},
+      {term:'Motivation Theories', def:'Key theories for the CAPM exam:',
+       subpoints:['Maslow\'s Hierarchy: Physiological → Safety → Social → Esteem → Self-Actualization. Lower needs must be met before higher needs motivate.','Herzberg\'s Two-Factor: Hygiene factors (salary, work conditions) prevent dissatisfaction. Motivators (achievement, recognition) create satisfaction.','McGregor\'s Theory X: workers are lazy, need control. Theory Y: workers are motivated, seek responsibility. Good PM uses Theory Y approach.','Ouchi\'s Theory Z: employees committed when they feel valued long-term (lifetime employment, consensus decisions).','Vroom\'s Expectancy Theory: Motivation = Expectancy × Instrumentality × Valence.']},
+      {term:'Recognition & Rewards', def:'Effective motivation tool. Must be:',
+       subpoints:['Timely: given close to the accomplishment','Specific: clearly tied to a specific behavior or achievement','Meaningful: aligned with what the recipient values','Consistent: applied fairly across the team']},
+      {term:'Colocation', def:'Placing team members in the same physical location (war room, bullpen). Improves informal communication and team cohesion.'},
+    ],
+    tips:['Tuckman: Forming → Storming → Norming → Performing → Adjourning. Know this order.','PM leadership style should ADAPT to the team\'s stage: Direct → Coach → Facilitate → Delegate → Celebrate.','Storming is NORMAL and expected — do not try to skip it.','Maslow: meet lower needs before higher needs motivate. Herzberg: hygiene factors prevent dissatisfaction, not create satisfaction.']
+  },
+
+  { id:'9.5', name:'Manage Team', ka:'9. Project Resource Management', pg:'exec',
+    purpose:'Track team member performance, provide feedback, resolve issues, and manage team changes to optimize project performance.',
+    inputs:['Project Management Plan','Project Documents','Work Performance Reports','Team Performance Assessments','EEFs','OPAs'],
+    tools:['Interpersonal & Team Skills (active listening, conflict management, emotional intelligence, influencing, networking)','Project Management Information System'],
+    outputs:['Change Requests','Project Management Plan Updates','Project Documents Updates','EEF Updates'],
+    sequence: [
+      {label:'Collaborate / Problem Solve — BEST', detail:'Incorporates multiple viewpoints; both parties win. Addresses root cause. Long-lasting resolution. Use when a win-win solution exists.'},
+      {label:'Compromise / Reconcile', detail:'Each party gives up something. Both partially satisfied. No one fully wins. Good when time is short and both sides are reasonable.'},
+      {label:'Smooth / Accommodate', detail:'Emphasize agreement, downplay differences. Temporary fix — conflict may resurface later.'},
+      {label:'Force / Direct', detail:'PM uses authority to impose a decision. Win-lose. Damages morale. Use only in emergencies or time-critical situations.'},
+      {label:'Withdraw / Avoid — WORST', detail:'Walk away, postpone, or ignore the conflict. Does not resolve the issue — only delays it. Problem gets worse over time.'},
+    ],
+    concepts:[
+      {term:'Conflict Resolution Methods', def:'Five methods, ordered from most to least effective for long-term resolution:',
+       subpoints:['1. Collaborate (Problem Solve): best long-term solution — both parties analyze the problem together','2. Compromise: "give and take" — each side concedes something; acceptable short-term solution','3. Smooth (Accommodate): emphasize common ground; does not address root cause','4. Force (Direct): impose a decision; creates win-lose; lowest morale impact','5. Withdraw (Avoid): worst approach — problem persists and escalates']},
+      {term:'Types of Power', def:'Influence sources available to the PM:',
+       subpoints:['Expert Power (BEST): based on PM\'s knowledge and skills. Most respected by team.','Referent Power: based on charisma, respect, and personal relationships.','Formal (Legitimate) Power: comes from the position/title. Granted by organization.','Reward Power: ability to give bonuses, recognition, promotions.','Coercive (Penalty) Power (WORST): ability to penalize or fire. Creates fear; damages morale.']},
+      {term:'Emotional Intelligence (EI)', def:'Ability to identify, assess, and manage personal emotions and the emotions of others.',
+       subpoints:['Self-awareness: understanding your own emotions','Self-regulation: managing your emotional reactions','Empathy: understanding others\' emotions','Social skills: managing relationships effectively','High EI correlates with better team performance and conflict resolution']},
+      {term:'Leadership Styles', def:'PM adapts style to team maturity and situation:',
+       subpoints:['Directing (telling): specific instructions, close supervision — for new or inexperienced teams','Coaching: guidance + encouragement — for developing teams','Facilitating: coordination, supports team decisions — for competent teams','Supporting: empowers, removes obstacles — for experienced teams','Delegating: minimal guidance, high autonomy — for expert teams']},
+    ],
+    tips:['Conflict: Collaborate is BEST (win-win). Withdraw/Avoid is WORST (problem gets worse).','Expert power is the most effective type for a PM.','Coercive (punishment) power damages morale and should be avoided.','Theory Y manager trusts employees and gives them autonomy — the PM should emulate this.']
+  },
+
+  { id:'9.6', name:'Control Resources', ka:'9. Project Resource Management', pg:'mc',
+    purpose:'Ensure physical resources assigned and allocated to the project are available as planned and monitor planned vs. actual resource utilization.',
+    inputs:['Project Management Plan','Project Documents','Work Performance Data','Agreements','OPAs'],
+    tools:['Data Analysis','Problem Solving','Interpersonal & Team Skills','Project Management Information System'],
+    outputs:['Work Performance Information','Change Requests','Project Management Plan Updates','Project Documents Updates'],
+    concepts:[
+      {term:'Resource Leveling vs. Resource Smoothing', def:'Two techniques for managing resource conflicts:',
+       subpoints:['Resource Leveling: adjusts activity start/finish dates to resolve over-allocation. MAY extend the project end date. Critical path may change.','Resource Smoothing: adjusts activities within their float to smooth resource demand. Does NOT change the project end date or critical path.']},
+      {term:'Physical Resources vs. Team Resources', def:'Two different focuses:',
+       subpoints:['Control Resources (9.6): focuses on PHYSICAL resources — equipment, materials, facilities','Manage Team (9.5): focuses on PEOPLE — performance, morale, conflict']},
+      {term:'Resource Histogram', def:'Bar chart showing resource usage over time. Used to visualize over-allocation and plan leveling.'},
+    ],
+    tips:['Control Resources = physical resources (things). Manage Team = people.','Resource leveling may extend schedule; resource smoothing keeps schedule fixed.']
+  },
+
+  // ===== 10. COMMUNICATIONS =====
+  { id:'10.1', name:'Plan Communications Management', ka:'10. Project Communications Management', pg:'plan',
+    purpose:'Develop an appropriate approach and plan for project communications based on stakeholder information needs and available organizational assets.',
+    inputs:['Project Charter','Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Expert Judgment','Communication Requirements Analysis','Communication Technology','Communication Models','Communication Methods','Interpersonal & Team Skills','Data Representation','Meetings'],
+    outputs:['Communications Management Plan','Project Management Plan Updates','Project Documents Updates'],
+    sequence: [
+      {label:'Interactive Communication — Most Effective', detail:'Two-way, real-time exchange. Examples: meetings, phone calls, video conferences. Best for complex issues and immediate feedback.'},
+      {label:'Push Communication', detail:'One-way, sent to specific recipients. Examples: email, memos, reports, status updates. Recipient may not read or understand.'},
+      {label:'Pull Communication — Least Efficient', detail:'Recipient accesses at own discretion. Examples: intranet, lessons learned databases, e-learning. Best for large audiences and reference material.'},
+    ],
+    concepts:[
+      {term:'Communications Management Plan', def:'Documents all aspects of project communications.',
+       subpoints:['Who needs what information, when, and in what format','Communication methods and technology to use','Frequency of communications','Responsible party for each communication','Communication escalation procedures','Glossary of common terminology']},
+      {term:'Communication Channels Formula', def:'N × (N − 1) / 2, where N = number of stakeholders.',
+       subpoints:['5 people: 5×4/2 = 10 channels','10 people: 10×9/2 = 45 channels','Adding 1 person to a 9-person team: 9×8/2 = 36 → 10×9/2 = 45 (+9 channels!)','This demonstrates why large teams are exponentially harder to manage']},
+      {term:'Communication Model Components', def:'The basic sender-receiver model:',
+       subpoints:['Sender: encodes and transmits the message','Message: information being communicated','Channel/Medium: how the message travels','Receiver: decodes the message','Feedback: receiver confirms understanding','Noise: anything that distorts the message (language barriers, jargon, distractions, cultural differences)']},
+      {term:'PM Time on Communication', def:'The Project Manager spends approximately 90% of their time communicating. Clear, accurate communication is the PM\'s most critical skill.'},
+    ],
+    tips:['Communication channels: N(N-1)/2. Adding 1 person creates N−1 new channels.','Interactive > Push > Pull in terms of effectiveness.','PM spends ~90% of their time communicating — communication IS the job.','The communications plan answers: Who? What? When? How? By whom?']
+  },
+
+  { id:'10.2', name:'Manage Communications', ka:'10. Project Communications Management', pg:'exec',
+    purpose:'Ensure timely and appropriate collection, creation, distribution, storage, retrieval, management, monitoring, and disposition of project information.',
+    inputs:['Project Management Plan','Project Documents','Work Performance Reports','EEFs','OPAs'],
+    tools:['Communication Technology','Communication Methods','Communication Skills','Project Management Information System','Project Reporting','Interpersonal & Team Skills','Meetings'],
+    outputs:['Project Communications','Project Management Plan Updates','Project Documents Updates','OPA Updates'],
+    concepts:[
+      {term:'Project Communications', def:'All information distributed to stakeholders per the Communications Management Plan.',
+       subpoints:['Performance Reports: status, progress, trend, variance reports','Issue Logs: current problems and resolution status','Change Logs: approved and rejected change requests','Risk Reports: current risk status and response progress']},
+      {term:'Effective Communication Skills', def:'Key skills for the PM:',
+       subpoints:['Active Listening: fully concentrating, understanding, responding. Includes nodding, paraphrasing, asking clarifying questions.','Feedback: confirming the message was understood as intended','Nonverbal communication: body language, tone, eye contact (make up ~55% of communication)','Writing skills: clear, concise, accurate written communications']},
+      {term:'Communication Barriers (Noise)', def:'Factors that distort or block communication:',
+       subpoints:['Cultural differences and language barriers','Use of technical jargon or acronyms the receiver doesn\'t know','Physical noise (environment)','Emotional state of sender or receiver','Information overload']},
+    ],
+    tips:['Manage Communications = DISTRIBUTING information per the plan. Active execution.','Monitor Communications (10.3) = checking if communications are EFFECTIVE. Feedback loop.','Active listening is a key PM skill — confirm understanding, paraphrase, ask questions.']
+  },
+
+  { id:'10.3', name:'Monitor Communications', ka:'10. Project Communications Management', pg:'mc',
+    purpose:'Ensure the information needs of the project and its stakeholders are met.',
+    inputs:['Project Management Plan','Project Documents','Work Performance Data','EEFs','OPAs'],
+    tools:['Expert Judgment','Project Management Information System','Data Representation','Interpersonal & Team Skills','Meetings'],
+    outputs:['Work Performance Information','Change Requests','Project Management Plan Updates','Project Documents Updates'],
+    concepts:[
+      {term:'Communication Effectiveness Monitoring', def:'Assessing whether communications are achieving their purpose:',
+       subpoints:['Are stakeholders receiving and understanding information?','Are the right people getting the right information at the right time?','Is the communication method appropriate for the message?','Are there gaps — stakeholders not getting what they need?']},
+      {term:'Communication Audits', def:'Periodic review of the communications plan effectiveness. May identify: gaps in frequency, wrong format, wrong audience, barriers not addressed.'},
+    ],
+    tips:['Monitor Communications = checking effectiveness of communications — not just sending them.','If gaps found, generate change requests to update the communications plan.','Stakeholder feedback is the best indicator of communication effectiveness.']
+  },
+
+  // ===== 11. RISK =====
+  { id:'11.1', name:'Plan Risk Management', ka:'11. Project Risk Management', pg:'plan',
+    purpose:'Define how to conduct risk management activities for a project.',
+    inputs:['Project Charter','Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Gathering','Meetings'],
+    outputs:['Risk Management Plan'],
+    concepts:[
+      {term:'Risk Management Plan', def:'Defines the framework for all risk management activities.',
+       subpoints:['Risk strategy: overall approach to risk','Methodology: tools and data sources to use','Roles and responsibilities: risk owner assignments','Funding: budget allocated for risk management','Timing: when risk activities will be performed','Risk categories: RBS (Risk Breakdown Structure)','Probability and impact scales: how to measure risks','Probability and Impact Matrix: template for scoring risks','Risk appetite and thresholds']},
+      {term:'Risk Appetite vs. Tolerance vs. Threshold', def:'Three related but distinct concepts:',
+       subpoints:['Risk Appetite: overall degree of uncertainty the organization will accept in pursuit of objectives. "How much risk are we willing to take?"','Risk Tolerance: acceptable range of variation around an objective. A specific measurable limit.','Risk Threshold: level of risk at which stakeholders will take action. A specific trigger point.']},
+      {term:'Risk vs. Uncertainty vs. Issue', def:'Important distinctions:',
+       subpoints:['Risk: uncertain future event that could affect objectives (positive or negative)','Issue: risk that has already occurred — it is a current problem to manage','Uncertainty: complete lack of knowledge about an event (cannot be measured)']},
+    ],
+    tips:['Risk Management Plan ≠ Risk Register. Plan = HOW to manage risks. Register = the identified risks.','Risk appetite determines aggressiveness of responses.','All project risks should be identified — including OPPORTUNITIES (positive risks).']
+  },
+
+  { id:'11.2', name:'Identify Risks', ka:'11. Project Risk Management', pg:'plan',
+    purpose:'Identify individual project risks and sources of overall project risk and document their characteristics.',
+    inputs:['Project Management Plan','Project Documents','Agreements','Procurement Documentation','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Gathering (brainstorming, checklists, interviews)','Data Analysis (root cause, assumption & constraint analysis, SWOT, document analysis)','Interpersonal & Team Skills','Prompt Lists','Meetings'],
+    outputs:['Risk Register','Risk Report','Project Documents Updates'],
+    sequence: [
+      {label:'Brainstorming (General)', detail:'Group technique to generate broad list of risks quickly. Facilitator leads, no criticism allowed during generation.'},
+      {label:'Delphi Technique (Anonymous Experts)', detail:'Anonymous expert questionnaire rounds. Reduces bias. Good for controversial or sensitive risks.'},
+      {label:'Interviews (Targeted)', detail:'Individual structured conversations with subject matter experts and stakeholders to identify specific risks.'},
+      {label:'Checklists (Lessons Learned)', detail:'Review of risks from past similar projects. Useful starting point but should not be the only method.'},
+      {label:'SWOT Analysis (Strategic)', detail:'Strengths and Weaknesses (internal), Opportunities and Threats (external). Broadens risk identification beyond just technical risks.'},
+      {label:'Assumption & Constraint Analysis', detail:'Examine project assumptions and constraints for falseness or instability — these are sources of risk.'},
+    ],
+    concepts:[
+      {term:'Risk Register', def:'Central repository for all identified risks.',
+       subpoints:['Risk ID and description','Risk category (from RBS)','Root cause of the risk','Probability, impact, and risk score (added in 11.3)','Risk owner (added in 11.5)','Proposed responses (added in 11.5)','Residual and secondary risks (added in 11.5)','Current status']},
+      {term:'Risk Types', def:'Risks can be positive or negative:',
+       subpoints:['Threat: negative risk — if it occurs, harms project objectives','Opportunity: positive risk — if it occurs, benefits project objectives','Overall Project Risk: effect of uncertainty on the project as a whole','Individual Risk: specific uncertain events that affect objectives']},
+      {term:'SWOT Analysis for Risk', def:'Examines Strengths, Weaknesses, Opportunities, Threats from a strategic perspective. Helps identify risks and opportunities beyond just technical issues.'},
+    ],
+    tips:['Risk identification is ITERATIVE — new risks emerge throughout the project lifecycle.','EVERYONE participates in risk identification — not just the PM.','Both THREATS and OPPORTUNITIES are risks — do not ignore positive risks.','Assumption log from 4.1 is a key input — false assumptions are major risk sources.']
+  },
+
+  { id:'11.3', name:'Perform Qualitative Risk Analysis', ka:'11. Project Risk Management', pg:'plan',
+    purpose:'Prioritize individual project risks for further analysis or action by assessing probability of occurrence and impact.',
+    inputs:['Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Gathering','Data Analysis (risk probability and impact assessment, risk matrix)','Interpersonal & Team Skills','Risk Categorization','Data Representation','Meetings'],
+    outputs:['Project Documents Updates (Risk Register)'],
+    sequence: [
+      {label:'Assign Probability Score', detail:'Rate likelihood of occurrence. Scale: High/Medium/Low or numeric (0.1, 0.3, 0.5, 0.7, 0.9).'},
+      {label:'Assign Impact Score', detail:'Rate magnitude of effect on objectives if risk occurs. Same scale as probability.'},
+      {label:'Calculate Risk Score', detail:'Risk Score = Probability × Impact. Maps to the P&I Matrix.'},
+      {label:'Prioritize', detail:'High scores → priority for quantitative analysis and response planning. Low scores → Watch List.'},
+    ],
+    concepts:[
+      {term:'Probability and Impact Matrix', def:'Grid mapping probability vs. impact to classify risks as High, Medium, or Low priority.',
+       subpoints:['High Priority (Red zone): high P × high I → immediate attention, consider quantitative analysis','Medium Priority (Yellow zone): moderate P or I → monitor and plan responses','Low Priority (Green zone / Watch List): low P and low I → document and monitor passively']},
+      {term:'Qualitative vs. Quantitative Analysis', def:'Two approaches to risk analysis:',
+       subpoints:['Qualitative (11.3): SUBJECTIVE, fast, cheap, uses judgment-based scales. Done FIRST for all risks.','Quantitative (11.4): OBJECTIVE, data-driven, uses numeric models. Done SECOND, only for high-priority risks.']},
+      {term:'Risk Urgency Assessment', def:'Some risks may be lower probability/impact but require immediate action due to timing constraints. Urgency is separate from priority.'},
+      {term:'Risk Categorization', def:'Grouping risks by source, area of the project, or RBS category to identify concentrations of risk.'},
+    ],
+    tips:['Qualitative = SUBJECTIVE judgment. Quantitative = OBJECTIVE data. Do qualitative FIRST.','Risk Score = Probability × Impact. Higher score = higher priority.','Watch list = low-priority risks not actively managed but still monitored.','Not all risks go through quantitative analysis — only high-priority ones.']
+  },
+
+  { id:'11.4', name:'Perform Quantitative Risk Analysis', ka:'11. Project Risk Management', pg:'plan',
+    purpose:'Numerically analyze the combined effect of identified individual project risks and other sources of uncertainty on overall project objectives.',
+    inputs:['Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Gathering','Interpersonal & Team Skills','Representations of Uncertainty','Data Analysis (simulations, sensitivity analysis, decision tree, influence diagram)'],
+    outputs:['Project Documents Updates (Risk Report)'],
+    sequence: [
+      {label:'Monte Carlo Simulation', detail:'Runs thousands of scenarios using probability distributions for inputs. Produces probability curve for project cost/schedule. Most comprehensive.'},
+      {label:'Sensitivity Analysis (Tornado Diagram)', detail:'Determines which individual risks have the greatest impact on the overall project. Visualized as a Tornado Diagram — widest bar = most impactful risk.'},
+      {label:'Decision Tree Analysis', detail:'Evaluates multiple decision paths with probabilities and outcomes. Uses EMV (Expected Monetary Value) = Probability × Monetary Impact to select best option.'},
+      {label:'Influence Diagrams', detail:'Graphical representation of situations showing causal influences, timing relationships, and other relationships between variables.'},
+    ],
+    concepts:[
+      {term:'Monte Carlo Simulation', def:'Iterative computer simulation running thousands of scenarios to determine probability distributions for project outcomes.',
+       subpoints:['Inputs: activity durations or costs with probability distributions (triangular, normal, etc.)','Output: S-curve showing probability of completing within different cost/schedule targets','Example: "80% probability of completing within $1.2M and 14 months"','Most widely used quantitative risk tool']},
+      {term:'Expected Monetary Value (EMV)', def:'Probability × Monetary Impact. Used in decision trees.',
+       subpoints:['Threat: probability × negative impact (e.g., 30% × −$50,000 = −$15,000)','Opportunity: probability × positive impact (e.g., 25% × $40,000 = +$10,000)','Decision tree: sum EMVs for all branches at each node to find best decision path']},
+      {term:'Sensitivity Analysis', def:'Determines which risks have the most potential impact on the project. Tornado Diagram visualizes results — widest bars = highest-impact risks.',
+       subpoints:['Helps prioritize where to focus risk responses','Identifies "swing" variables — small changes in these cause large changes in outcomes']},
+    ],
+    tips:['Quantitative analysis is optional and used for high-complexity, high-value projects only.','EMV = Probability × Impact (in dollars). Used in decision trees.','Monte Carlo is the most comprehensive tool — produces probability distributions, not single-point estimates.','Sensitivity analysis → Tornado Diagram shows which risks matter most.']
+  },
+
+  { id:'11.5', name:'Plan Risk Responses', ka:'11. Project Risk Management', pg:'plan',
+    purpose:'Develop options, select strategies, and agree on actions to address overall project risk exposure and individual project risks.',
+    inputs:['Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Gathering','Interpersonal & Team Skills','Strategies for Threats','Strategies for Opportunities','Contingent Response Strategies','Strategies for Overall Project Risk'],
+    outputs:['Change Requests','Project Management Plan Updates','Project Documents Updates'],
+    sequence: [
+      {label:'Threat Strategies (Most → Least Aggressive)', detail:'Avoid (eliminate risk) → Mitigate (reduce P or I) → Transfer (shift impact) → Accept (acknowledge) → Escalate (out of scope).'},
+      {label:'Opportunity Strategies (Most → Least Aggressive)', detail:'Exploit (ensure it happens) → Enhance (increase P or I) → Share (partner to capture) → Accept (take benefit if it occurs) → Escalate.'},
+    ],
+    concepts:[
+      {term:'Threat Response Strategies', def:'Five strategies for negative risks:',
+       subpoints:['1. Avoid (MOST aggressive): Eliminate the risk by changing the plan. Change scope, extend schedule, add resources. "Remove the risk entirely."','2. Mitigate: Reduce probability and/or impact to acceptable levels. Add tests, use proven technology, add resources.','3. Transfer: Shift negative impact to a third party via insurance, warranties, contracts, subcontracting. Risk is NOT eliminated — only ownership shifts.','4. Accept: Acknowledge the risk and decide not to act. Active acceptance = create contingency reserve. Passive = do nothing, deal with it if it occurs.','5. Escalate: Risk is outside project scope — pass to program/portfolio/organizational level.']},
+      {term:'Opportunity Response Strategies', def:'Five strategies for positive risks:',
+       subpoints:['1. Exploit (MOST aggressive): Ensure the opportunity definitely occurs. Add resources, change scope to capture it.','2. Enhance: Increase probability and/or positive impact.','3. Share: Partner with a third party best positioned to capture the opportunity (joint venture, teaming agreement).','4. Accept: Willing to take advantage if it occurs but not proactively pursuing it.','5. Escalate: Opportunity is outside project scope — elevate to higher level.']},
+      {term:'Contingency Plan vs. Fallback Plan', def:'Two levels of response planning:',
+       subpoints:['Contingency Plan: predefined response triggered when a specific risk event occurs (risk trigger identified in advance)','Fallback Plan: secondary response activated if the contingency plan is inadequate or the risk impact is worse than expected']},
+      {term:'Risk Trigger (Early Warning Indicator)', def:'Specific condition or event that signals a risk is about to occur or has occurred. Defined in advance to enable timely response activation.'},
+      {term:'Residual vs. Secondary Risk', def:'Two types of risk created by responses:',
+       subpoints:['Residual Risk: risk that REMAINS after a response has been implemented. Must still be monitored and managed.','Secondary Risk: NEW risk created as a DIRECT RESULT of implementing a risk response. Must be identified and planned for.']},
+    ],
+    tips:['Threats: Avoid > Mitigate > Transfer > Accept > Escalate.','Opportunities: Exploit > Enhance > Share > Accept > Escalate.','Avoid is most aggressive for threats; Escalate handles out-of-scope risks.','Transfer does NOT eliminate the risk — it moves who bears it.','Know secondary risk (caused by a response) vs. residual risk (remains after response).']
+  },
+
+  { id:'11.6', name:'Implement Risk Responses', ka:'11. Project Risk Management', pg:'exec',
+    purpose:'Implement agreed-upon risk response plans.',
+    inputs:['Project Management Plan','Project Documents','OPAs'],
+    tools:['Expert Judgment','Interpersonal & Team Skills','Project Management Information System'],
+    outputs:['Change Requests','Project Documents Updates'],
+    concepts:[
+      {term:'Risk Owner', def:'Person assigned responsibility for monitoring a specific risk and implementing the agreed response if the risk occurs.',
+       subpoints:['Assigned during 11.5 Plan Risk Responses','Takes action when a risk trigger is identified','Reports risk status to the PM','Cannot always be the PM — should be person closest to the risk']},
+      {term:'Workaround', def:'Unplanned response to an unidentified or previously accepted risk that has now occurred. Reactive, not proactive.',
+       subpoints:['Workaround ≠ contingency plan: workarounds are improvised; contingency plans are pre-planned','Workarounds should be documented and added to lessons learned']},
+      {term:'Importance of This Process', def:'Many organizations plan risk responses but fail to execute them. This process ensures responses are ACTUALLY implemented, not just planned.'},
+    ],
+    tips:['This process ensures risk responses are EXECUTED — not just documented in the plan.','Risk owners execute their assigned responses here.','Workarounds are reactive responses to risks that weren\'t planned for.']
+  },
+
+  { id:'11.7', name:'Monitor Risks', ka:'11. Project Risk Management', pg:'mc',
+    purpose:'Monitor the implementation of agreed-upon risk response plans, track identified risks, identify new risks, and evaluate risk process effectiveness.',
+    inputs:['Project Management Plan','Project Documents','Work Performance Data','Work Performance Reports'],
+    tools:['Data Analysis (technical performance analysis, reserve analysis)','Audits','Meetings'],
+    outputs:['Work Performance Information','Change Requests','Project Management Plan Updates','Project Documents Updates','OPA Updates'],
+    sequence: [
+      {label:'Risk Reassessment', detail:'Periodic re-evaluation of existing risks and identification of new risks. Scheduled regularly or triggered by major project events.'},
+      {label:'Risk Audits', detail:'Formal examination of risk management process effectiveness. Are responses working? Are owners performing duties?'},
+      {label:'Reserve Analysis', detail:'Compare remaining contingency reserves to amount of remaining project risk. Adjust reserves up or down as needed.'},
+      {label:'Close Risks', detail:'When a risk has passed (the trigger window has closed) or its response is complete, formally close it in the Risk Register.'},
+    ],
+    concepts:[
+      {term:'Risk Reassessment', def:'Regularly scheduled or event-triggered review of all risks in the register. May identify: new risks, risks that no longer apply, changes in probability/impact, changes in response effectiveness.'},
+      {term:'Reserve Analysis', def:'Compares remaining contingency reserves against remaining project risk exposure. If reserves are insufficient → request more (change request). If excess → release back to management reserve.'},
+      {term:'Risk Audit', def:'Examines effectiveness of risk management processes and documents results. Ensures: risk owners are performing duties, responses are being implemented as planned, process is adding value.'},
+    ],
+    tips:['Risk monitoring is CONTINUOUS and ongoing — new risks can emerge at any time.','Reserve analysis checks if contingency reserves are still sufficient as the project progresses.','Risks should be formally CLOSED when their trigger window passes, not left open indefinitely.']
+  },
+
+  // ===== 12. PROCUREMENT =====
+  { id:'12.1', name:'Plan Procurement Management', ka:'12. Project Procurement Management', pg:'plan',
+    purpose:'Document project procurement decisions, specify the approach, and identify potential sellers.',
+    inputs:['Project Charter','Business Documents','Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Gathering','Data Analysis','Source Selection Analysis','Meetings'],
+    outputs:['Procurement Management Plan','Procurement Strategy','Bid Documents','Procurement Statement of Work','Source Selection Criteria','Make-or-Buy Decisions','Independent Cost Estimates','Change Requests','Project Documents Updates','OPA Updates'],
+    sequence: [
+      {label:'Fixed-Price (FP) — Seller Bears Cost Risk', detail:'Scope must be well-defined. Seller gives a firm price. If costs overrun, seller absorbs them. Best for the BUYER when scope is clear.'},
+      {label:'Cost-Reimbursable (CR) — Buyer Bears Cost Risk', detail:'Buyer pays actual costs + fee. Used when scope is uncertain or evolving. Seller has less incentive for efficiency.'},
+      {label:'Time & Material (T&M) — Shared Risk', detail:'Hybrid contract. Pays per unit of time and material. Good for short-term or when scope is not fully defined.'},
+    ],
+    concepts:[
+      {term:'Contract Types — Risk Distribution', def:'Contract type determines who bears the financial risk:',
+       subpoints:['FFP (Firm Fixed Price): buyer gets fixed price. Seller absorbs cost overruns. Buyer bears scope risk.','FPIF (Fixed Price Incentive Fee): fixed price with incentive for meeting targets. Encourages seller efficiency.','FP-EPA (Fixed Price with Economic Price Adjustment): adjusts for inflation over long contracts.','CPFF (Cost Plus Fixed Fee): actual costs + fixed fee. Buyer bears all cost risk. Fee does not change.','CPIF (Cost Plus Incentive Fee): actual costs + variable fee based on performance targets. Incentivizes efficiency.','CPAF (Cost Plus Award Fee): actual costs + subjective award fee based on buyer\'s satisfaction.','T&M: fixed rates per hour/unit but total cost depends on how much is needed. Requires oversight to control.']},
+      {term:'Bid Documents', def:'Documents sent to potential sellers requesting their proposals:',
+       subpoints:['RFI (Request for Information): early-stage market research. Not a commitment.','RFP (Request for Proposal): full proposal including approach, methodology, qualifications, and price. Used for COMPLEX work.','RFQ (Request for Quotation): price quote only. Used for COMMODITIES or simple, well-defined purchases.','IFB (Invitation for Bid): sealed bids. Lowest responsive bid wins. Used for construction and commodity contracts.']},
+      {term:'Procurement Statement of Work (SOW)', def:'Describes the procurement item in sufficient detail to allow prospective sellers to determine whether they can provide it.',
+       subpoints:['Scope of work to be performed','Location of work','Performance requirements','Period of performance','Deliverables and milestones']},
+      {term:'Make-or-Buy Analysis', def:'Determines whether to produce in-house (make) or purchase externally (buy).',
+       subpoints:['Make: if proprietary, greater control needed, cost effective, existing capacity, security concerns','Buy: if specialized expertise needed, lower cost, frees internal resources, standard commodity item']},
+      {term:'Source Selection Criteria', def:'Criteria for evaluating seller proposals: technical approach, management approach, experience and past performance, price, financial stability.'},
+    ],
+    tips:['FP = seller bears cost risk (best for buyer when scope is well-defined).','CR = buyer bears cost risk (needed when scope is uncertain).','T&M = hybrid — good for short-term or staff augmentation.','RFP = complex work (full proposal). RFQ = simple purchase (price only).']
+  },
+
+  { id:'12.2', name:'Conduct Procurements', ka:'12. Project Procurement Management', pg:'exec',
+    purpose:'Obtain seller responses, select a seller, and award a contract.',
+    inputs:['Project Management Plan','Project Documents','Procurement Documentation','Seller Proposals','EEFs','OPAs'],
+    tools:['Expert Judgment','Advertising','Bidder Conferences','Data Analysis','Interpersonal & Team Skills'],
+    outputs:['Selected Sellers','Agreements (Contracts)','Change Requests','Project Management Plan Updates','Project Documents Updates','OPA Updates'],
+    sequence: [
+      {label:'Advertise', detail:'Publish procurement opportunity to attract qualified sellers. Required for government contracts.'},
+      {label:'Bidder Conference', detail:'Meeting with all prospective sellers to ensure equal understanding of requirements. Q&A documented and shared with all bidders.'},
+      {label:'Receive Proposals', detail:'Sellers submit proposals by the deadline.'},
+      {label:'Evaluate Proposals', detail:'Evaluate against Source Selection Criteria. May include technical and commercial evaluation panels.'},
+      {label:'Award Contract', detail:'Select the winning seller(s) and execute the contract — a formal legal agreement.'},
+    ],
+    concepts:[
+      {term:'Bidder Conference', def:'Meeting with ALL prospective sellers BEFORE proposals are submitted. Ensures all potential sellers have equal information and understanding.',
+       subpoints:['Also called: pre-bid conference, contractor conference, vendor conference','All questions and answers are documented and distributed to ALL bidders','Prevents information asymmetry between competing sellers','Required on government and large commercial contracts']},
+      {term:'Contract (Agreement)', def:'A mutually binding legal document obligating the seller to provide specific products/services and the buyer to pay for them.',
+       subpoints:['Legal and binding on both parties once signed','All changes must be formal and documented','Contains: statement of work, pricing, payment terms, acceptance criteria, warranties, penalties/incentives, termination clauses']},
+      {term:'Evaluation Criteria', def:'Weighted factors used to select the best seller:',
+       subpoints:['Technical approach and understanding','Management approach','Experience with similar projects','Past performance / references','Price/cost','Financial stability','Proposed key personnel qualifications']},
+    ],
+    tips:['Bidder conferences ensure ALL sellers get the same information — prevents unfair advantage.','Once signed, the contract is legally binding — both parties are committed.','The contract is the key output of 12.2.']
+  },
+
+  { id:'12.3', name:'Control Procurements', ka:'12. Project Procurement Management', pg:'mc',
+    purpose:'Manage procurement relationships, monitor contract performance, and make changes and corrections as appropriate, and close out contracts.',
+    inputs:['Project Management Plan','Project Documents','Agreements','Procurement Documentation','Approved Change Requests','Work Performance Data','EEFs','OPAs'],
+    tools:['Expert Judgment','Claims Administration','Data Analysis','Inspection','Audits'],
+    outputs:['Closed Procurements','Work Performance Information','Procurement Documentation Updates','Change Requests','Project Management Plan Updates','Project Documents Updates','OPA Updates'],
+    sequence: [
+      {label:'Monitor Contract Performance', detail:'Compare seller deliverables and performance against contract terms. Track schedule, cost, quality, and compliance.'},
+      {label:'Manage Contract Changes', detail:'All contract changes must go through formal change control. Verbal agreements are NOT binding.'},
+      {label:'Claims Administration', detail:'Handle disputes where buyer and seller disagree. Resolution options: negotiation → mediation → arbitration → litigation.'},
+      {label:'Contract Closure', detail:'Verify all deliverables accepted, all payments made, all paperwork complete. Issue formal written notice of contract completion.'},
+    ],
+    concepts:[
+      {term:'Claims Administration', def:'Managing contested changes and potential breaches of contract — situations where the buyer and seller cannot agree.',
+       subpoints:['First attempt: direct negotiation between parties','If negotiation fails: mediation (neutral third party facilitates)','If mediation fails: arbitration (binding or non-binding third party decision)','Last resort: litigation (court proceedings — expensive and time-consuming)','ADR (Alternative Dispute Resolution) = all methods except litigation']},
+      {term:'Contract Closure', def:'Formal completion and settlement of the contract.',
+       subpoints:['Verify all deliverables were received and accepted','Confirm all invoices paid and claims settled','Issue formal written notice of contract completion to seller','Archive all contract documentation','Update procurement documentation in OPAs']},
+      {term:'Procurement Audit', def:'Structured review of the procurement process from planning through execution. Identifies successes and failures for lessons learned.'},
+    ],
+    tips:['Control Procurements includes CLOSING contracts — not just monitoring them.','ALL communications with sellers should be documented IN WRITING.','Verbal agreements are NOT binding — always document in writing.','Claims → Negotiation → Mediation → Arbitration → Litigation (escalation path).']
+  },
+
+  // ===== 13. STAKEHOLDER =====
+  { id:'13.1', name:'Identify Stakeholders', ka:'13. Project Stakeholder Management', pg:'init',
+    purpose:'Identify project stakeholders and analyze and document relevant information about their interests, involvement, interdependencies, influence, and potential impact on the project.',
+    inputs:['Project Charter','Business Documents','Project Management Plan','Project Documents','Agreements','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Gathering (questionnaires, brainstorming)','Data Analysis (stakeholder analysis, document analysis)','Data Representation (power/interest grid, stakeholder cube, salience model, directions of influence)','Meetings'],
+    outputs:['Stakeholder Register','Change Requests','Project Management Plan Updates','Project Documents Updates'],
+    sequence: [
+      {label:'Manage Closely (High Power, High Interest)', detail:'Most important quadrant. Engage frequently, keep informed, solicit input. Examples: Project Sponsor, Key Customer.'},
+      {label:'Keep Satisfied (High Power, Low Interest)', detail:'Meet their needs. Over-communicate if they show increased interest. Examples: Senior executives not directly involved.'},
+      {label:'Keep Informed (Low Power, High Interest)', detail:'Provide regular updates. They care about the outcome. Examples: End users, subject matter experts.'},
+      {label:'Monitor (Low Power, Low Interest)', detail:'Minimal communication needed. Watch for changes in engagement. Examples: General public, peripheral departments.'},
+    ],
+    concepts:[
+      {term:'Stakeholder Register', def:'Central document listing all identified stakeholders with assessment of their interests and influence.',
+       subpoints:['Identification information: name, organization, position, contact info','Assessment information: requirements, expectations, potential influence, phase of greatest interest','Stakeholder classification: supporter, neutral, resistor','CONFIDENTIAL — do not share broadly, especially resistance classifications']},
+      {term:'Power/Interest Grid', def:'Maps stakeholders on two axes for engagement strategy:',
+       subpoints:['X-axis: Level of Interest (low → high concern about project outcomes)','Y-axis: Level of Power/Authority (low → high)','Quadrant 1 (High Power, High Interest): Manage Closely','Quadrant 2 (High Power, Low Interest): Keep Satisfied','Quadrant 3 (Low Power, High Interest): Keep Informed','Quadrant 4 (Low Power, Low Interest): Monitor']},
+      {term:'Salience Model', def:'Classifies stakeholders by three attributes:',
+       subpoints:['Power: authority to impose their will on the project','Legitimacy: appropriate involvement in the project','Urgency: need for immediate attention']},
+      {term:'Directions of Influence', def:'How stakeholders exert influence:',
+       subpoints:['Upward: to senior management, steering committee, sponsor','Downward: to team members, contractors','Outward: to external stakeholders, government, public','Sideward: to peers, other PMs, functional managers']},
+    ],
+    tips:['Identify Stakeholders EARLY — ideally during charter development. The sooner, the better.','High Power + High Interest = Manage Closely (most critical stakeholder group).','Stakeholder Register is CONFIDENTIAL — contains sensitive engagement assessments.','Stakeholder identification is iterative — new stakeholders emerge throughout the project.']
+  },
+
+  { id:'13.2', name:'Plan Stakeholder Engagement', ka:'13. Project Stakeholder Management', pg:'plan',
+    purpose:'Develop approaches to involve project stakeholders based on their needs, expectations, interests, and potential impact on the project.',
+    inputs:['Project Charter','Project Management Plan','Project Documents','Agreements','EEFs','OPAs'],
+    tools:['Expert Judgment','Data Gathering','Data Analysis','Decision Making','Data Representation (mind map)','Meetings'],
+    outputs:['Stakeholder Engagement Plan'],
+    sequence: [
+      {label:'Unaware', detail:'Stakeholder does not know about the project or its potential impact. → Strategy: Inform them.'},
+      {label:'Resistant', detail:'Stakeholder is aware but opposed to the project. → Strategy: Understand concerns, address objections.'},
+      {label:'Neutral', detail:'Stakeholder is aware but neither supportive nor opposed. → Strategy: Engage, understand interests.'},
+      {label:'Supportive', detail:'Stakeholder is aware and supports the project. → Strategy: Reinforce support, involve in activities.'},
+      {label:'Leading (Ideal State)', detail:'Stakeholder is actively engaged and promotes the project. → Strategy: Leverage their advocacy.'},
+    ],
+    concepts:[
+      {term:'Stakeholder Engagement Plan', def:'Identifies strategies and actions needed to promote productive stakeholder involvement throughout the project.',
+       subpoints:['Desired and current engagement levels per stakeholder','Scope and impact of change on stakeholders','Interrelationships between stakeholders','Communication requirements','Timing and frequency of engagement activities']},
+      {term:'Engagement Assessment Matrix', def:'Tool comparing current vs. desired engagement level for each stakeholder.',
+       subpoints:['C = Current engagement level','D = Desired engagement level','Gap between C and D = what needs to be addressed in the engagement plan','Goal: move all stakeholders to Supportive or Leading','No gap = no action needed for that stakeholder']},
+    ],
+    tips:['Gap between current and desired engagement = the engagement challenge to address.','Leading = highest level — stakeholder actively champions the project.','Stakeholder engagement plan is PART OF the PMP (a subsidiary plan).']
+  },
+
+  { id:'13.3', name:'Manage Stakeholder Engagement', ka:'13. Project Stakeholder Management', pg:'exec',
+    purpose:'Communicate and work with stakeholders to meet their needs and expectations, address issues, and foster appropriate stakeholder involvement.',
+    inputs:['Project Management Plan','Project Documents','EEFs','OPAs'],
+    tools:['Expert Judgment','Communication Skills','Interpersonal & Team Skills (conflict management, cultural awareness, negotiation, observation)','Ground Rules','Meetings'],
+    outputs:['Change Requests','Project Management Plan Updates','Project Documents Updates'],
+    concepts:[
+      {term:'Managing Expectations', def:'Working with stakeholders to understand their requirements, address concerns proactively, and clarify what CAN and CANNOT be done.',
+       subpoints:['Proactive communication: don\'t wait for stakeholders to raise issues','Address concerns EARLY — before they escalate to formal issues or complaints','Negotiate trade-offs between competing stakeholder needs','Be transparent about project constraints and challenges']},
+      {term:'Cultural Awareness', def:'Understanding and respecting cultural differences when managing international or diverse stakeholder groups.',
+       subpoints:['Communication styles: direct vs. indirect cultures','Decision-making styles: consensus vs. hierarchical','Time orientation: monochronic vs. polychronic','Non-verbal communication differences (eye contact, personal space)']},
+      {term:'Negotiation with Stakeholders', def:'Finding mutually acceptable solutions when stakeholder needs conflict with project constraints.',
+       subpoints:['Focus on interests, not positions','Look for win-win solutions','Know your BATNA (Best Alternative To Negotiated Agreement)','Document all agreements in writing']},
+    ],
+    tips:['Active stakeholder management reduces resistance and builds support.','Address concerns PROACTIVELY — before they become formal issues.','Cultural awareness is increasingly important in global projects.']
+  },
+
+  { id:'13.4', name:'Monitor Stakeholder Engagement', ka:'13. Project Stakeholder Management', pg:'mc',
+    purpose:'Monitor project stakeholder relationships and tailor strategies for engaging stakeholders through modification of engagement strategies and plans.',
+    inputs:['Project Management Plan','Project Documents','Work Performance Data','EEFs','OPAs'],
+    tools:['Data Analysis','Decision Making','Data Representation','Communication Skills','Interpersonal & Team Skills','Meetings'],
+    outputs:['Work Performance Information','Change Requests','Project Management Plan Updates','Project Documents Updates'],
+    concepts:[
+      {term:'Monitoring Stakeholder Engagement', def:'Continuously tracking whether engagement strategies are working and whether stakeholder relationships are evolving positively.',
+       subpoints:['Watch for changes in stakeholder interest, power, or attitude','Disengaged stakeholders can become blockers later — address early','Previously supportive stakeholders may become resistant due to project changes','Monitor for new stakeholders who may emerge mid-project']},
+      {term:'Engagement Metrics', def:'Indicators used to assess engagement effectiveness:',
+       subpoints:['Stakeholder attendance at meetings and reviews','Quality and timeliness of stakeholder input and approvals','Number of escalations or complaints','Frequency of unsolicited stakeholder communication','Progress on closing the gap between current and desired engagement levels']},
+    ],
+    tips:['Stakeholder needs and interests CHANGE — monitoring must be continuous, not one-time.','Disengaged stakeholders (especially high-power ones) can kill a project — watch for early warning signs.','Update the Stakeholder Engagement Plan when significant changes occur.']
+  },
+];
+
+// ==================== TABLE STRUCTURE ====================
+const knowledgeAreas = [
+  { num:4,  label:'Project Integration Management' },
+  { num:5,  label:'Project Scope Management' },
+  { num:6,  label:'Project Schedule Management' },
+  { num:7,  label:'Project Cost Management' },
+  { num:8,  label:'Project Quality Management' },
+  { num:9,  label:'Project Resource Management' },
+  { num:10, label:'Project Communications Management' },
+  { num:11, label:'Project Risk Management' },
+  { num:12, label:'Project Procurement Management' },
+  { num:13, label:'Project Stakeholder Management' },
+];
+const pgOrder = ['init','plan','exec','mc','close'];
+const pgClass = { init:'td-init', plan:'td-plan', exec:'td-exec', mc:'td-mc', close:'td-close' };
+const chipClass = { init:'chip-init', plan:'chip-plan', exec:'chip-exec', mc:'chip-mc', close:'chip-close' };
+
+function buildTable(filtered) {
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+  knowledgeAreas.forEach(ka => {
+    const tr = document.createElement('tr');
+    const tdKA = document.createElement('td');
+    tdKA.className = 'td-ka';
+    tdKA.innerHTML = `<span class="ka-num">${ka.num}.</span>${ka.label}`;
+    tr.appendChild(tdKA);
+
+    pgOrder.forEach(pg => {
+      const td = document.createElement('td');
+      const matchingProcs = (filtered || processes).filter(p => p.ka.startsWith(`${ka.num}.`) && p.pg === pg);
+      if (matchingProcs.length === 0) {
+        td.className = 'td-empty';
+      } else {
+        td.className = pgClass[pg];
+        matchingProcs.forEach(proc => {
+          const chip = document.createElement('button');
+          chip.className = `process-chip ${chipClass[pg]}`;
+          chip.textContent = `${proc.id} ${proc.name}`;
+          chip.dataset.id = proc.id;
+          chip.addEventListener('click', () => openModal(proc.id));
+          td.appendChild(chip);
+        });
+      }
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+}
+
+// ==================== SEARCH ====================
+document.getElementById('searchInput').addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  const count = document.getElementById('searchCount');
+  if (!q) {
+    buildTable();
+    count.textContent = '';
+    return;
+  }
+  const filtered = processes.filter(p =>
+    p.id.includes(q) || p.name.toLowerCase().includes(q) ||
+    p.purpose.toLowerCase().includes(q) ||
+    p.concepts.some(c =>
+      c.term.toLowerCase().includes(q) || c.def.toLowerCase().includes(q) ||
+      (c.subpoints && c.subpoints.some(sp => sp.toLowerCase().includes(q)))
+    ) ||
+    (p.sequence && p.sequence.some(s => s.label.toLowerCase().includes(q) || s.detail.toLowerCase().includes(q))) ||
+    p.ka.toLowerCase().includes(q)
+  );
+  buildTable(filtered);
+  count.textContent = `${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
+});
+
+// ==================== MODAL ====================
+let currentProcessList = [];
+let currentIndex = 0;
+
+function openModal(id) {
+  const searchQ = document.getElementById('searchInput').value.trim();
+  currentProcessList = searchQ
+    ? processes.filter(p => p.id.includes(searchQ.toLowerCase()) || p.name.toLowerCase().includes(searchQ.toLowerCase()))
+    : processes;
+  currentIndex = currentProcessList.findIndex(p => p.id === id);
+  if (currentIndex === -1) { currentProcessList = processes; currentIndex = processes.findIndex(p => p.id === id); }
+  renderModal(currentProcessList[currentIndex]);
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function renderModal(proc) {
+  const pg = proc.pg;
+  const color = pgColor[pg];
+  document.getElementById('modalNumber').textContent = proc.id;
+  document.getElementById('modalNumber').style.background = color + '30';
+  document.getElementById('modalNumber').style.color = color;
+  document.getElementById('modalTitle').textContent = proc.name;
+  document.getElementById('modalSubtitle').textContent = `${proc.ka}  ·  ${pgLabel[pg]} Process Group`;
+
+  const idx = currentProcessList.indexOf(proc);
+  const total = currentProcessList.length;
+  document.getElementById('navCount').textContent = `${idx+1} / ${total}`;
+  document.getElementById('progressFill').style.width = `${((idx+1)/total)*100}%`;
+  document.getElementById('prevBtn').disabled = idx === 0;
+  document.getElementById('nextBtn').disabled = idx === total - 1;
+
+  const body = document.getElementById('modalBody');
+
+  const seqHtml = proc.sequence ? `
+    <div class="section-title">&#9312; Sequence / Order</div>
+    <div class="sequence-list">
+      ${proc.sequence.map((item, i) => `
+        <div class="sequence-item">
+          <div class="seq-num">${i+1}</div>
+          <div class="seq-content">
+            <div class="seq-label">${item.label}</div>
+            ${item.detail ? `<div class="seq-detail">${item.detail}</div>` : ''}
+          </div>
+        </div>`).join('')}
+    </div>
+  ` : '';
+
+  const conceptsHtml = proc.concepts.map(c => `
+    <div class="concept-item">
+      <div class="concept-term">${c.term}</div>
+      <div class="concept-def">${c.def}</div>
+      ${c.subpoints ? `
+        <div class="concept-subpoints">
+          ${c.subpoints.map(sp => `<div class="concept-subpoint">${sp}</div>`).join('')}
+        </div>` : ''}
+    </div>`).join('');
+
+  body.innerHTML = `
+    <div class="modal-purpose">${proc.purpose}</div>
+
+    <div class="section-title">Inputs</div>
+    <div class="tag-list">${proc.inputs.map(i => `<span class="tag tag-input">${i}</span>`).join('')}</div>
+
+    <div class="section-title">Tools &amp; Techniques</div>
+    <div class="tag-list">${proc.tools.map(t => `<span class="tag tag-tool">${t}</span>`).join('')}</div>
+
+    <div class="section-title">Outputs</div>
+    <div class="tag-list">${proc.outputs.map(o => `<span class="tag tag-output">${o}</span>`).join('')}</div>
+
+    ${seqHtml}
+
+    <div class="section-title">Key Concepts</div>
+    <div class="key-concepts">${conceptsHtml}</div>
+
+    <div class="exam-tips">
+      <div class="exam-tips-title">&#9733; Exam Tips</div>
+      <ul>${proc.tips.map(t => `<li>${t}</li>`).join('')}</ul>
+    </div>
+  `;
+  body.scrollTop = 0;
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+document.getElementById('prevBtn').addEventListener('click', () => {
+  if (currentIndex > 0) { currentIndex--; renderModal(currentProcessList[currentIndex]); }
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if (currentIndex < currentProcessList.length - 1) { currentIndex++; renderModal(currentProcessList[currentIndex]); }
+});
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('modalOverlay').classList.contains('active')) return;
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { if (currentIndex < currentProcessList.length-1) { currentIndex++; renderModal(currentProcessList[currentIndex]); } }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { if (currentIndex > 0) { currentIndex--; renderModal(currentProcessList[currentIndex]); } }
+});
+
+// ==================== INIT ====================
+buildTable();
+</script>
+</body>
+</html>
